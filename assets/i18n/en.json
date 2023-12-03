@@ -1,0 +1,11 @@
+{
+    "translation": {
+        "Invited": "Invited",
+        "paid": "Paid",
+        "Getstarted": "Get Started",
+        "login": "LOGIN",
+        "Enter Name":"Enter Name",
+        "Enter Id":"Enter Id",
+        "paymentText": "{{name}} paid {{amount}}"
+    }
+}
