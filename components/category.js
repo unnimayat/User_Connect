@@ -24,7 +24,7 @@ const CategoryPage = ({ route }) => {
       // await AsyncStorage.setItem('username', name);
 
     } catch (error) {
-      console.error('Failed to store token', error);
+      console.error('Failed to store token', error);console.log();
     }
   };
 
