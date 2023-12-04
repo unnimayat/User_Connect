@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, View, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, TextInput, View, TouchableOpacity, Text,ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
 export default function SignIn() {
-  const [name, setName] = useState('');
-  const [id, setId] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
   const navigation = useNavigation();
 
   const storeToken = async (token) => {
@@ -58,29 +61,37 @@ export default function SignIn() {
 
 
   const handleNameChange = (value) => {
-    setName(value);
+    setUsername(value);
   };
 
-  const handleIdChange = (value) => {
-    setId(value);
+  const handlePasswordChange = (value) => {
+    setPassword(value);
+  };
+  const handleEmailChange = (value) => {
+    setEmail(value);
+  };
+  const handlePhoneChange = (value) => {
+    setPhone(value);
+  };
+  const handleAddressChange = (value) => {
+    setAddress(value);
   };
 
   const handleButtonPress = () => {
     // Handle the login logic and navigate to the next screen
-    axios.post('https://backendshg-0jzh.onrender.com/signin', { name, id })
+    axios.post('https://connect-q46w.onrender.com/user/register', { username, password,email,phone,address })
     .then(response => {
       console.log(response);
-
-      if (response.data.status) {
-        // Perform any additional logic for sign-in success, e.g., set user session
-        console.log('Sign-in successful');
-        const token = response.data.token;
+      const successMessage = 'User registered successfully';
+      if (response.data.message === successMessage) {
+        // Registration success logic
+        console.log('Sign-in/Sign-up successful');
+        const token = response.data.user._id;
         storeToken(token);
-        // Navigate to the desired screen (replace 'dashboard' with your target screen)
         navigation.navigate('login');
       } else {
-        // Handle sign-in failure
-        console.log('Sign-in unsuccessful');
+        // Registration failure logic
+        console.log('Sign-in/Sign-up unsuccessful');
       }
     })
     .catch(error => {
@@ -94,28 +105,53 @@ export default function SignIn() {
 
   return (
     <View style={styles.container}>
+        
       <View style={styles.label}>
         <Text style={styles.loginText1}>Sign In</Text>
+        <ScrollView>
         <TextInput
           style={styles.inputname}
           placeholder="Enter Name"
           placeholderTextColor="#fff"
-          value={name}
+          value={username}
           onChangeText={handleNameChange}
         />
         <TextInput
           style={styles.inputname}
-          placeholder="Enter Id"
+          placeholder="Enter Password"
           placeholderTextColor="#fff"
-          value={id}
+          value={password}
           secureTextEntry={true}
-          onChangeText={handleIdChange}
+          onChangeText={handlePasswordChange}
         />
+        <TextInput
+          style={styles.inputname}
+          placeholder="Enter Email"
+          placeholderTextColor="#fff"
+          value={email}
+          onChangeText={handleEmailChange}
+        />
+        <TextInput
+          style={styles.inputname}
+          placeholder="Enter Phone no"
+          placeholderTextColor="#fff"
+          value={phone}
+          onChangeText={handlePhoneChange}
+        />
+        <TextInput
+          style={styles.inputname}
+          placeholder="Enter Address"
+          placeholderTextColor="#fff"
+          value={address}
+          onChangeText={handleAddressChange}
+        />
+        </ScrollView>
          <Text  style={styles.newlogin} onPress={handleLogin}>Login?</Text>
         <TouchableOpacity style={styles.loginbtn} onPress={handleButtonPress}>
-          <Text style={styles.loginText}>Sign In</Text>
+          <Text style={styles.loginText}>Sign Up</Text>
         </TouchableOpacity>
       </View>
+      
     </View>
   );
 }
@@ -172,7 +208,7 @@ const styles = StyleSheet.create({
     width: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    top: 40,
+    top: -10,
   },
   loginText: {
     color: '#000', // Black text color

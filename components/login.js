@@ -5,8 +5,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
 export default function Login() {
-  const [name, setName] = useState('');
-  const [id, setId] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
   const storeToken = async (token) => {
@@ -56,17 +56,18 @@ export default function Login() {
     }
   };
   const handleButtonPress = () => {
-    axios.post('https://backendshg-0jzh.onrender.com/login', { name, id })
+    axios.post('https://connect-q46w.onrender.com/user/login', { username, password })
       .then(response => {
         // Handle the response from the server
         // setName({ name });
         // console.log(name);
         console.log(response)
-        if (response.data.status) {
+        if (response.request.status==200) {
           // Login successful, navigate to the next screen
           const token = response.data.token;
           storeToken(token)
-
+          console.log('login successful');
+          
           navigation.navigate('feed');
         } else {
           console.log('login unsuccessful');
@@ -79,11 +80,11 @@ export default function Login() {
   };
 
   const handleNameChange = (value) => {
-    setName(value);
+    setUsername(value);
   };
 
-  const handleIdChange = (value) => {
-    setId(value);
+  const handlePasswordChange = (value) => {
+    setPassword(value);
   };
 
   // const handleButtonPress = () => {
@@ -103,18 +104,18 @@ export default function Login() {
           style={styles.inputname}
           placeholder="Enter Name"
           placeholderTextColor="#fff"
-          value={name}
+          value={username}
           onChangeText={handleNameChange}
         />
         <TextInput
           style={styles.inputname}
           placeholder="Enter Id"
           placeholderTextColor="#fff"
-          value={id}
+          value={password}
           secureTextEntry={true}
-          onChangeText={handleIdChange}
+          onChangeText={handlePasswordChange}
         />
-        <Text  style={styles.newlogin} onPress={handleSignIn}>Sign In?</Text>
+        <Text  style={styles.newlogin} onPress={handleSignIn}>Sign Up?</Text>
         <TouchableOpacity style={styles.loginbtn} onPress={handleButtonPress}>
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
