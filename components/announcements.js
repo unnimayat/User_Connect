@@ -57,7 +57,7 @@ const MyScreen = () => {
   useEffect(() => {
     if (id !== '') {
       axios
-        .get(`https://backendshg-0jzh.onrender.com/announcements/${id}`)
+        .get(`${process.env.API_URL}/announcements/${id}`)
         .then((response) => {
           console.log(123);
           setMessages(response.data);
@@ -78,7 +78,7 @@ const MyScreen = () => {
       setMessages([...messages, message]);
       setNewMessage('');
       axios
-        .post('https://backendshg-0jzh.onrender.com/announcements', { id, message:message.message })
+        .post(`${process.env.API_URL}/announcements`, { id, message:message.message })
         .then((response) => {
           console.log('Response data:', response.data);
           setMessages([...messages, message]);

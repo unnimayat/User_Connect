@@ -46,7 +46,7 @@ const MyScreen = () => {
 
   useEffect(() => {
     if (id !== '') {
-      axios.get(`https://backendshg-0jzh.onrender.com/users/${id}/hasadminAccess`).then(response => {
+      axios.get(`${process.env.API_URL}/users/${id}/hasadminAccess`).then(response => {
         setIsadmin(response.data.hasAdminAccess)
         console.log(isadmin)
       })
@@ -77,7 +77,7 @@ const MyScreen = () => {
   useEffect(() => {
     if (id !== '') {
       axios
-        .get(`https://backendshg-0jzh.onrender.com/minutes/${id}`)
+        .get(`${process.env.API_URL}/minutes/${id}`)
         .then((response) => {
           console.log(123);
           setMinutes(response.data);
@@ -110,7 +110,7 @@ const MyScreen = () => {
       console.log('hii')
       if(id!==''){
         axios
-        .post('https://backendshg-0jzh.onrender.com/minutes', { id, message:newMessage.message})
+        .post(`${process.env.API_URL}/minutes`, { id, message:newMessage.message})
         .then((response) => {
           console.log('hello')
           console.log('Response data:..', response.data);

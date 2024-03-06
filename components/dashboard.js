@@ -59,7 +59,7 @@ const Dashboard = ({ route }) => {
   const { t, i18n } = useTranslation();
   useEffect(() => {
     if (uid !== '') {
-      axios.get(`https://backendshg-0jzh.onrender.com/users/${uid}/hasadminAccess`).then(response => {
+      axios.get(`${process.env.API_URL}/users/${uid}/hasadminAccess`).then(response => {
         setIsadmin(response.data.hasAdminAccess)
         console.log(isadmin)
       })
@@ -96,7 +96,7 @@ const Dashboard = ({ route }) => {
 
   const handleAddMessage = () => {
     axios
-      .post('https://backendshg-0jzh.onrender.com/makepayment', { userID: uid, id: id, amt: amount })
+      .post(`${process.env.API_URL}/makepayment`, { userID: uid, id: id, amt: amount })
       .then(response => {
         console.log(response.data);
         navigation.navigate('unit')
@@ -108,7 +108,7 @@ const Dashboard = ({ route }) => {
 
   useEffect(() => {
     if (uid !== '') {
-      axios.post('https://backendshg-0jzh.onrender.com/listpayment', { userID: uid, id: id })
+      axios.post(`${process.env.API_URL}/listpayment`, { userID: uid, id: id })
         .then(response => {
           console.log(response.data)
           const data = Array.isArray(response.data) ? response.data : [response.data];

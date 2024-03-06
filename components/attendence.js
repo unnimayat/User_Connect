@@ -69,7 +69,7 @@ const Attendance = () => {
     console.log(text)
     if (uid != '' && text!=='' && text.length===10) {
       setIsLoading(true)
-      axios.get(`https://backendshg-0jzh.onrender.com/attendance/${uid}/${text}`)
+      axios.get(`${process.env.API_URL}/attendance/${uid}/${text}`)
         .then(response => {
           console.log(text);
           console.log("First")
@@ -117,7 +117,7 @@ const Attendance = () => {
 
     // Make the POST request to the server
     axios
-      .post('https://backendshg-0jzh.onrender.com/attendance', postData)
+      .post(`${process.env.API_URL}/attendance`, postData)
       .then((response) => {
         // Handle the response if needed
         console.log('Attendance data saved successfully');

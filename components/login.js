@@ -56,7 +56,8 @@ export default function Login() {
     }
   };
   const handleButtonPress = () => {
-    axios.post('https://connect-q46w.onrender.com/user/login', { username, password })
+    console.log(process.env.EXPO_PUBLIC_API_URL)
+    axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/login`, { username, password })
       .then(response => {
         // Handle the response from the server
         // setName({ name });

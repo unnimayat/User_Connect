@@ -60,7 +60,7 @@ export default function CreateJoin() {
 
   useEffect(() => {
     if (uid != '') {
-      axios.get(`https://backendshg-0jzh.onrender.com/users/${uid}/invited`)
+      axios.get(`${process.env.API_URL}/users/${uid}/invited`)
         .then(response => {
           const { is_invited } = response.data;
           console.log(is_invited)
@@ -91,7 +91,7 @@ export default function CreateJoin() {
   const handleButtonJoinPress = () => {
     setCreateLabel(false);
     setJoinLabel(true);
-    axios.get(`https://backendshg-0jzh.onrender.com/invitedunits/${uid}`)
+    axios.get(`${process.env.API_URL}/invitedunits/${uid}`)
     .then(response=>{
       console.log(response);
       const {unitId,unitName}=response.data;
@@ -103,7 +103,7 @@ export default function CreateJoin() {
 
 
 const handleButtonJoin=()=>{
-axios.post('https://backendshg-0jzh.onrender.com/joinunit',{unitId:unit_id,userId:uid})
+axios.post(`${process.env.API_URL}/joinunit`,{unitId:unit_id,userId:uid})
 .then(response=>{
   console.log(response);
   console.log('hi');
@@ -111,7 +111,7 @@ axios.post('https://backendshg-0jzh.onrender.com/joinunit',{unitId:unit_id,userI
 })
   }
   const handleButtonPress = () => {
-    axios.post('https://backendshg-0jzh.onrender.com/createunit', { unit_name, uid })
+    axios.post(`${process.env.API_URL}/createunit`, { unit_name, uid })
       .then(response => {
         console.log(response)
         if (response.data.status) {

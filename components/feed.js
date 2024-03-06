@@ -1,6 +1,5 @@
 // CreateJoin.js
-import MapView, { UrlTile, Marker } from 'react-native-maps';
-import * as Location from 'expo-location';
+
 import React from 'react';
 import { useEffect } from 'react';
 import { StyleSheet, View, ScrollView, TouchableOpacity, Text } from 'react-native';
@@ -10,6 +9,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
 import { useState } from 'react';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
 const handleHomePress = () => {
   // Handle navigation to home
 };
@@ -22,48 +23,59 @@ const handleProfilePress = () => {
   // Handle navigation to profile
 };
 
+const CategoryCard = ({ category, onPress }) => {
+  const icons = {
+    plumber: 'tools', // You can replace 'tools' with the appropriate icon name
+    Electrician: 'bolt',
+    'House Keeping': 'broom',
+    Mechanic: 'wrench',
+    Beautician: 'cut',
+    carpentry: 'hammer',
+  };
+
+  return (
+    <TouchableOpacity style={styles.categoryLabel} onPress={onPress}>
+      <FontAwesome5 name={icons[category]} size={40} color="#000000" style={styles.categoryIcon} />
+      <Text style={styles.categoryText}>{category}</Text>
+    </TouchableOpacity>
+  );
+};
 
 
 const CreateJoin = () => {
   const navigation = useNavigation();
-  const [username,setUsername]=useState('')
+  const [username, setUsername] = useState('')
   const handleCategoryPress = (category) => {
     navigation.navigate('category', { category });
-  };const [location, setLocation] = useState(null);
-  const [markerPosition, setMarkerPosition] = useState(null);
-  const [searchText, setSearchText] = useState('');
-  const [errorMsg, setErrorMsg] = useState(null);
-  const mapRef = useRef(null);
-
+  };
   const categories = [
     'plumber',
-    'Category 2',
-    'Category 3',
-    'Category 4',
-    'Category 5',
-    'Category 6',
-    'Category 7',
-    'Category 8',
+    'Electrician',
+    'House Keeping',
+    'Mechanic',
+    'Beautician',
+    'carpentry',
   ];
-  const storeToken = async (token) => {
-    try {
-      await AsyncStorage.setItem('token', token);
-      console.log('Token stored successfully');
-      console.log(token)
 
-      // Decode the token to get user details
+  // const storeToken = async (token) => {
+  //   try {
+  //     await AsyncStorage.setItem('token', token);
+  //     console.log('Token stored successfully');
+  //     console.log(token)
 
-      // const decodedToken = jwt_decode(token);
-      // const { name, id } = decodedToken;
+  //     // Decode the token to get user details
 
-      // Store user details in AsyncStorage
-      // await AsyncStorage.setItem('userId', id);
-      // await AsyncStorage.setItem('username', name);
+  //     // const decodedToken = jwt_decode(token);
+  //     // const { name, id } = decodedToken;
 
-    } catch (error) {
-      console.error('Failed to store token', error);console.log();
-    }
-  };
+  //     // Store user details in AsyncStorage
+  //     // await AsyncStorage.setItem('userId', id);
+  //     // await AsyncStorage.setItem('username', name);
+
+  //   } catch (error) {
+  //     console.error('Failed to store token', error); console.log();
+  //   }
+  // };
 
   const retrieveToken = async () => {
     try {
@@ -73,7 +85,7 @@ const CreateJoin = () => {
         console.log('Token retrieved successfully');
         const decodedToken = jwt_decode(token);
         const { username, password } = decodedToken;
-        console.log(username) 
+        console.log(username)
         setUsername(username);
         return { username, password };
       } else {
@@ -88,126 +100,32 @@ const CreateJoin = () => {
   useEffect(() => {
     const fetchData = async () => {
       const { username, password } = await retrieveToken();
-      console.log(username); 
+      console.log(username);
     };
     fetchData();
   }, [])
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
 
-      let currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation);
-      setMarkerPosition({
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
-      });
-    })();
-  }, []);
-
-  const handleMarkerPress = (e) => {
-    setMarkerPosition(e.nativeEvent.coordinate);
-    console.log(markerPosition)
-  };
-
-  const handleSearch = async () => {
-    try {
-      const response = await Location.geocodeAsync(searchText);
-      if (response.length > 0) {
-        const { latitude, longitude } = response[0];
-        setMarkerPosition({ latitude, longitude });
-        // Animate to the new marker position
-        mapRef.current.animateToRegion({
-          latitude,
-          longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        });
-      }
-    } catch (error) {
-      console.error('Error performing geocoding:', error);
-    }
-  };
-
-  let text = 'Waiting..';
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
+  const handleLocation = () => {
+    navigation.navigate('map')
   }
-
-  const renderMapView = () => {
-    return (
-      <View style={styles.container}>
-        <MapView
-          ref={mapRef}
-          style={styles.map}
-          initialRegion={{
-            latitude: location?.coords.latitude || 0,
-            longitude: location?.coords.longitude || 0,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        >
-          <UrlTile urlTemplate="http://c.tile.openstreetmap.org/{z}/{x}/{y}.png" maximumZ={19} />
-          {markerPosition && (
-            <Marker
-              coordinate={markerPosition}
-              title="Your Location"
-              onPress={handleMarkerPress}
-              draggable
-            />
-          )}
-        </MapView>
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter a place"
-            value={searchText}
-            onChangeText={(text) => setSearchText(text)}
-          />
-          <Button title="Search" onPress={handleSearch} />
-        </View>
-        <Text style={styles.paragraph}>{text}</Text>
-      </View>
-    );
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-          <Ionicons name="location" size={24} color="white"  style={{ marginLeft:0}} onPress={() => setShowMap(true)} />
-          {showMap && renderMapView()}
-          <Text style={styles.categoryText2}>location</Text>
-          <Text style={styles.categoryText3}>{username}</Text>
+        <Ionicons name="location" size={24} color="white" style={{ marginLeft: 10 }} onPress={handleLocation} />
+        <Text style={styles.categoryText2}>location</Text>
+        <Text style={styles.categoryText3}>{username}</Text>
       </View>
-      <hr style={{color:"white",width:"100%",height:0.5}}/>
+      {/* <hr style={{ color: "white", width: "100%", height: 0.5 }} /> */}
       <ScrollView contentContainerStyle={styles.categoryContainer}>
         <View style={styles.columnContainer}>
           <View style={styles.column}>
             {categories.slice(0, Math.ceil(categories.length / 2)).map((category, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.categoryLabel}
-                onPress={() => handleCategoryPress(category)}
-              >
-                <Text style={styles.categoryText}>{category}</Text>
-              </TouchableOpacity>
+              <CategoryCard key={index} category={category} onPress={() => handleCategoryPress(category)} />
             ))}
           </View>
           <View style={styles.column}>
             {categories.slice(Math.ceil(categories.length / 2)).map((category, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.categoryLabel}
-                onPress={() => handleCategoryPress(category)}
-              >
-                <Text style={styles.categoryText}>{category}</Text>
-              </TouchableOpacity>
+              <CategoryCard key={index} category={category} onPress={() => handleCategoryPress(category)} />
             ))}
           </View>
         </View>
@@ -233,7 +151,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000000',
-    alignItems: 'center',
     justifyContent: 'center',
   },
   columnContainer: {
@@ -244,7 +161,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   categoryContainer: {
-    padding: 16,
+    padding: 10,
+    backgroundColor: "black"
   },
   categoryLabel: {
     width: 150,
@@ -275,21 +193,33 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   header: {
-    flexDirection: 'row', 
-    marginBottom: 3,
-    marginTop:5
+    flexDirection: 'row',
+    marginBottom: 0,
+    marginTop: 10,
+    backgroundColor: "black"
   },
   categoryText2: {
     fontSize: 16,
-    fontWeight: 'normal', 
-    color:"white",
-    marginRight:-100,
+    fontWeight: 'normal',
+    color: "white",
+    marginLeft: 10,
   },
   categoryText3: {
     fontSize: 16,
-    fontWeight: 'normal', 
-    color:"white",
-    marginRight:-330,
+    fontWeight: 'normal',
+    color: "white",
+    marginLeft: 180,
+  },
+
+  categoryLabel: {
+    width: 150,
+    height: 250,
+    marginBottom: 10,
+    borderRadius: 15,
+    padding: 10,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

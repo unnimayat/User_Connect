@@ -56,7 +56,7 @@ export default function SendInvitation() {
   };
 
   const handleButtonPress = () => {
-    axios.post(`https://backendshg-0jzh.onrender.com/addusers`, { userId:id,id:inviteId })
+    axios.post(`${process.env.API_URL}/addusers`, { userId:id,id:inviteId })
       .then(response => {
         console.log(id)
         console.log(response)

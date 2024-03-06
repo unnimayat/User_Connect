@@ -18,9 +18,11 @@ import announcements from "./components/announcements"
 import pending from "./components/pending"
 import minutes from "./components/minutes"
 import ListingPage from "./components/list"
+import map from "./components/map"
 const Stack = createNativeStackNavigator();
 import {i18next} from './assets/i18n/i18n'
 import 'intl-pluralrules';
+
 const MyStack = () => {
   return (
     
@@ -47,6 +49,7 @@ const MyStack = () => {
         <Stack.Screen name="category" component={category} />
         <Stack.Screen name="ListingPage" component={ListingPage} />
         <Stack.Screen name="signin" component={signin} options={{title:''}}/>
+        <Stack.Screen name="map" component={map} options={{ title: '' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -58,7 +58,7 @@ const MyScreen = () => {
 
   useEffect(() => {
     if (uid !== '') {
-      axios.get(`https://backendshg-0jzh.onrender.com/users/${uid}/hasadminAccess`).then(response => {
+      axios.get(`${process.env.API_URL}/users/${uid}/hasadminAccess`).then(response => {
         setIsadmin(response.data.hasAdminAccess)
         console.log(isadmin)
       })
@@ -85,7 +85,7 @@ const MyScreen = () => {
   useEffect(() => {
     const fetch = async () => {
       if (uid !== '') {
-        await axios.get(`https://backendshg-0jzh.onrender.com/proposals/${uid}/not-voted`).then(response => {
+        await axios.get(`${process.env.API_URL}/proposals/${uid}/not-voted`).then(response => {
           console.log('working');
           console.log(response.data.description);
           setMessages(response.data);
@@ -139,7 +139,7 @@ const MyScreen = () => {
     updatedMessages[index].agreed = !updatedMessages[index].agreed;
     setMessages(updatedMessages);
 
-    axios.post(`https://backendshg-0jzh.onrender.com/proposals/vote`, { id: mid, userId: uid, vote: 1 }).then(response => {
+    axios.post(`${process.env.API_URL}/proposals/vote`, { id: mid, userId: uid, vote: 1 }).then(response => {
       console.log(response);
     })
       .catch(error => {
@@ -153,7 +153,7 @@ const MyScreen = () => {
     updatedMessages[index].agreed = false;
     setMessages(updatedMessages);
 
-    axios.post(`https://backendshg-0jzh.onrender.com/proposals/vote`, { id: mid, userId: uid, vote: -1 }).then(response => {
+    axios.post(`${process.env.API_URL}/proposals/vote`, { id: mid, userId: uid, vote: -1 }).then(response => {
       console.log(response);
     })
       .catch(error => {

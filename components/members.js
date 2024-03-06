@@ -47,7 +47,7 @@ const MemberListPage = () => {
   useEffect(() => {
     if (id !== '') {
       axios
-        .post('https://backendshg-0jzh.onrender.com/members', { id })
+        .post(`${process.env.API_URL}/members`, { id })
         .then(response => {
           console.log(response.data.members);
           setMembers(response.data.members); // Store members data in the state
@@ -59,7 +59,7 @@ const MemberListPage = () => {
   }, [id]);
 
   const fetchMemberDetails = (id) => {
-    const url = `https://backendshg-0jzh.onrender.com/dashboard/${id}`;
+    const url = `${process.env.API_URL}/dashboard/${id}`;
     axios
       .get(url)
       .then(response => {

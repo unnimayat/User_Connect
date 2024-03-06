@@ -53,7 +53,7 @@ const MyScreen = () => {
     setChanging(false);
     console.log('handlingPending')
     axios
-      .post('https://backendshg-0jzh.onrender.com/deleteproposal', { userId: uid, proposalId: pid, amt: amount })
+      .post(`${process.env.API_URL}/deleteproposal`, { userId: uid, proposalId: pid, amt: amount })
       .then(response => {
         console.log(response.data);
         navigation.navigate('unit')
@@ -65,7 +65,7 @@ const MyScreen = () => {
 
   useEffect(() => {
     if (uid !== '') {
-      axios.get(`https://backendshg-0jzh.onrender.com/users/${uid}/hasadminAccess`).then(response => {
+      axios.get(`${process.env.API_URL}/users/${uid}/hasadminAccess`).then(response => {
         setIsadmin(response.data.hasAdminAccess)
         console.log(isadmin)
       })
@@ -121,7 +121,7 @@ const MyScreen = () => {
   //     updatedMessages[index].agreed = !updatedMessages[index].agreed;
   //     setMessages(updatedMessages);
 
-  //     axios.post(`https://backendshg-0jzh.onrender.com/proposals/vote`,{id:mid,userId:uid,vote:1}).then(response=>{
+  //     axios.post(`${process.env.API_URL}/proposals/vote`,{id:mid,userId:uid,vote:1}).then(response=>{
   //       console.log(response);
   //     })
   //     .catch(error => {
@@ -135,7 +135,7 @@ const MyScreen = () => {
   //     updatedMessages[index].agreed = false;
   //     setMessages(updatedMessages);
 
-  //     axios.post(`https://backendshg-0jzh.onrender.com/proposals/vote`,{id:mid,userId:uid,vote:-1}).then(response=>{
+  //     axios.post(`${process.env.API_URL}/proposals/vote`,{id:mid,userId:uid,vote:-1}).then(response=>{
   //       console.log(response);
   //     })
   //     .catch(error => {
@@ -160,7 +160,7 @@ const MyScreen = () => {
     // {
     const fetch = async () => {
       if (uid !== '') {
-        await axios.post(`https://backendshg-0jzh.onrender.com/proposals/disapproved`, { userID: uid }).then(response => {
+        await axios.post(`${process.env.API_URL}/proposals/disapproved`, { userID: uid }).then(response => {
           console.log(response.data);
           const proposals = response.data;
           console.log(proposals)

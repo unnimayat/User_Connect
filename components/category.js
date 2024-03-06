@@ -1,37 +1,34 @@
-import React, { useState } from 'react';
-
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
+
 const CategoryPage = ({ route }) => {
   const { category } = route.params;
   const navigation = useNavigation();
+
   const storeToken = async (token) => {
     try {
       await AsyncStorage.setItem('token', token);
       console.log('Token stored successfully');
-      console.log(token)
-
-      // Decode the token to get user details
-
-      // const decodedToken = jwt_decode(token);
-      // const { name, id } = decodedToken;
-
-      // Store user details in AsyncStorage
-      // await AsyncStorage.setItem('userId', id);
-      // await AsyncStorage.setItem('username', name);
-
+      console.log(token);
     } catch (error) {
-      console.error('Failed to store token', error);console.log();
+      console.error('Failed to store token', error);
     }
   };
-  const [userId,setUserId]=useState('');
-  const [workerId,setWorkerId]=useState('')
-  const [username,setUserName]=useState('')
+
+  const [userId, setUserId] = useState('');
+  const [uid, setUId] = useState('');
+  const [workerId, setWorkerId] = useState('');
+  const [username, setUserName] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [matchingLocations, setMatchingLocations] = useState([]);
+  const [matchingWorkers, setMatchingWorkers] = useState([]);
+  const [location, setLocation] = useState('');
+
   const retrieveToken = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -40,8 +37,9 @@ const CategoryPage = ({ route }) => {
         console.log('Token retrieved successfully');
         const decodedToken = jwt_decode(token);
         const { username, password } = decodedToken;
-        setUserId(decodedToken.userId);
-        console.log(username) 
+        setUserId(username);
+        setUId(decodedToken.userId)
+        console.log("username", username);
         return { username, password };
       } else {
         console.log('Token not found');
@@ -52,106 +50,87 @@ const CategoryPage = ({ route }) => {
       return null;
     }
   };
+
   useEffect(() => {
     const fetchData = async () => {
       const { username, password } = await retrieveToken();
-      console.log(username); 
+      console.log(username);
       setUserName(username);
     };
     fetchData();
-  }, [])
-  const [searchQuery, setSearchQuery] = useState('');
-  const [matchingLocations, setMatchingLocations] = useState([]);
-  const [matchingWorkers, setMatchingWorkers] = useState([]);
-  const [location,setLocation]=useState('');
-  const handleSearch = async () => {
+  }, []);
+
+  const handleSearch = async (category) => {
+    console.log(category)
+    let requestBody = {
+      profession: category,
+      userId: userId,
+    }
+    console.log(requestBody)
+    axios.post(`${process.env.EXPO_PUBLIC_API_URL}/emp/listworkers`, requestBody)
+      .then(response => {
+        console.log(response.data);
+        setMatchingWorkers(response.data)
+      })
+      .catch(error => {
+        console.log('Error:', error);
+      });
+  };
+
+  const handleBook = async (workerId) => {
     try {
-      // Call the backend route to fetch matching workers
-      const response = await fetch(`https://connect-q46w.onrender.com/emp/workers/${category}/${location}`);
-      const workers = await response.json();
-      console.log('Matching workers:', workers);
-      // Assuming you have a state variable like matchingWorkers to store the result
-      setMatchingWorkers(workers);
+      const response = await axios.post(`${process.env.API_URL}/request/add-request`, {
+        userId: uid,
+        workerId,
+      });
+
+      console.log('Request added successfully:', response.data);
+      // You may want to update the state or perform additional actions based on the response
     } catch (error) {
-      console.error('Error fetching workers:', error);
-      // Handle errors as needed
+      console.error('Error adding request:', error);
     }
   };
-  const handleBook = async (workerId) =>{
-    // Perform booking logic using the studentId
-    // For example, you can navigate to a booking screen or show a confirmation message
-    const response = await axios.post('https://connect-q46w.onrender.com/request/add-request', {
-  userId ,
-   workerId 
-});
 
-
-    // Handle the response as needed
-    console.log('Request added successfully:', response.data); 
-    // Add your logic here
-  };
-
-  // const handleLocationPress = (location) => {
-  //   // Navigate to the listing page with the selected location
-  //   navigation.navigate('ListingPage', { category, location });
-  // };
-  const renderItem = ({ item }) => ( 
-    <View style={styles.studentItem}>
-      {/* Student Avatar (you can replace this with an image) */}
-      <View style={styles.studentAvatar} />
-      
-      {/* Student Information */}
-      <View style={styles.studentInfo}>
-        <Text style={styles.studentName}>ID: {item.empid}</Text>
-        <Text style={styles.studentDetails}>Name: {item.username}</Text> 
-        {/* Add more details as needed */}
+  const renderItem = ({ item }) => (
+    <View style={styles.workerItem}>
+      <View style={styles.workerAvatar} />
+      <View style={styles.workerInfo}>
+        <Text style={styles.workerName}>ID: {item.empid}</Text>
+        <Text style={styles.workerDetails}>Name: {item.username}</Text>
       </View>
       <TouchableOpacity
-      style={styles.bookButton}
-      onPress={() => handleBook(item._id)} // Replace with your booking logic
-    >
-      <Text style={styles.bookButtonText}>Book</Text>
-    </TouchableOpacity>
+        style={styles.bookButton}
+        onPress={() => handleBook(item._id)}
+      >
+        <Text style={styles.bookButtonText}>Book</Text>
+      </TouchableOpacity>
     </View>
   );
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Ionicons name="location" size={24} color="#000"  />
+        <Ionicons name="location" size={24} color="#000" />
         <Text style={styles.categoryText}>{category}</Text>
       </View>
-      
-      <View style={styles.searchContainer}> 
-      <Ionicons name="search" size={20} color="#777" style={styles.searchIcon} onPress={() => handleSearch()} />
 
-        <TextInput
+      <View>
+        <Ionicons name="search" size={20} color="#777" style={styles.searchIcon} onPress={() => handleSearch(category)} />
+        <Text>Click for gigs</Text>
+        {/* <TextInput
           style={styles.searchInput}
-          placeholder="Search for places..."
+          placeholder="Search for people"
           placeholderTextColor="#777"
           value={location}
-          onChangeText={(location) => {
-            setLocation(location);
-          }}
-        />
+          onChangeText={(location) => setLocation(location)}
+        /> */}
       </View>
-      {/* <FlatList
-        data={matchingWorkers}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleLocationPress(item)}>
-            <View style={styles.workerItem}>
-              <Text>ID: {item.id}</Text>
-              <Text>Name: {item.name}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      /> */}
+
       <FlatList
         data={matchingWorkers}
         keyExtractor={(item) => item.empid.toString()}
         renderItem={renderItem}
       />
-       
     </View>
   );
 };
@@ -181,28 +160,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginBottom: 16,
   },
-  studentItem: {
+  workerItem: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
-  studentAvatar: {
+  workerAvatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
     marginRight: 16,
-    backgroundColor: '#e0e0e0', // You can set a background color or use an image
+    backgroundColor: '#e0e0e0',
   },
-  studentInfo: {
+  workerInfo: {
     flex: 1,
   },
-  studentName: {
+  workerName: {
     fontSize: 16,
     fontWeight: 'bold',
   },
-  studentDetails: {
+  workerDetails: {
     fontSize: 14,
     color: '#666',
   },
@@ -214,21 +193,15 @@ const styles = StyleSheet.create({
     height: 40,
     color: '#000',
   },
-  locationItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    paddingVertical: 8,
-  },
   bookButton: {
-    backgroundColor: 'black', // Button background color
+    backgroundColor: 'black',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
-    marginLeft: 'auto', // Move the button to the right side
+    marginLeft: 'auto',
   },
-  
   bookButtonText: {
-    color: '#fff', // Button text color
+    color: '#fff',
     fontWeight: 'bold',
   },
 });
