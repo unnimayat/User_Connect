@@ -22,6 +22,7 @@ import map from "./components/map"
 const Stack = createNativeStackNavigator();
 import {i18next} from './assets/i18n/i18n'
 import 'intl-pluralrules';
+import Bidding from "./components/bidding"
 
 const MyStack = () => {
   return (
@@ -50,6 +51,7 @@ const MyStack = () => {
         <Stack.Screen name="ListingPage" component={ListingPage} />
         <Stack.Screen name="signin" component={signin} options={{title:''}}/>
         <Stack.Screen name="map" component={map} options={{ title: '' }} />
+        <Stack.Screen name="bidding" component={Bidding} options={{ title: '' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
