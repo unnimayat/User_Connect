@@ -19,9 +19,6 @@ const handleCreatePress = () => {
   // Handle navigation to create
 };
 
-const handleProfilePress = () => {
-  // Handle navigation to profile
-};
 
 const CategoryCard = ({ category, onPress }) => {
   const icons = {
@@ -48,6 +45,11 @@ const CreateJoin = () => {
   const handleCategoryPress = (category) => {
     navigation.navigate('category', { category });
   };
+  const handleProfilePress = () => {
+    // Handle navigation to profile
+    navigation.navigate('bidding');
+  };
+  
   const categories = [
     'plumber',
     'Electrician',
