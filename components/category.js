@@ -11,15 +11,6 @@ const CategoryPage = ({ route }) => {
   const { category } = route.params;
   const navigation = useNavigation();
 
-  const storeToken = async (token) => {
-    try {
-      await AsyncStorage.setItem('token', token);
-      console.log('Token stored successfully');
-      console.log(token);
-    } catch (error) {
-      console.error('Failed to store token', error);
-    }
-  };
 
   const [userId, setUserId] = useState('');
   const [uid, setUId] = useState('');
@@ -61,16 +52,16 @@ const CategoryPage = ({ route }) => {
     fetchData();
   }, []);
 
-  useEffect(()=>{
-    console.log("Hey")
-    socket.on('room',(message)=>{
-      console.log(message)
-    })
-    socket.on('roomMessage', (message) => {
-      console.log('Received message in the room:', message);
-      // Handle the received message, e.g., display it in the UI
-    });
-  },[socket])
+  // useEffect(()=>{
+  //   console.log("Hey")
+  //   socket.on('room',(message)=>{
+  //     console.log(message)
+  //   })
+  //   socket.on('roomMessage', (message) => {
+  //     console.log('Received message in the room:', message);
+  //     // Handle the received message, e.g., display it in the UI
+  //   });
+  // },[socket])
 
   const handleSearch = async (category) => {
     console.log(category)
@@ -102,9 +93,23 @@ const CategoryPage = ({ route }) => {
   //     console.error('Error adding request:', error);
   //   }
   // };
-  const handleBook = (workerId) => {
+  const handleBook = async(workerId) => {
+    console.log("uid",uid)
+    console.log("workerId",workerId)
+    try {
+        const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/chat`, {
+          userId: uid,
+          workerId,
+        });
+        console.log('Chat opened successfully', response.data);
+        socket.emit("createRoom", response.data.chatId);
+        // You may want to update the state or perform additional actions based on the response
+      } catch (error) {
+        console.error('Error adding request:', error);
+      }
     navigation.navigate('bidding', { workerId });
   };
+
   const renderItem = ({ item }) => (
     <View style={styles.workerItem}>
       <View style={styles.workerAvatar} />
@@ -114,7 +119,7 @@ const CategoryPage = ({ route }) => {
       </View>
       <TouchableOpacity
         style={styles.bookButton}
-        onPress={() => handleBook(item.username)}
+        onPress={() => handleBook(item._id)}
       >
         <Text style={styles.bookButtonText}>CHAT</Text>
       </TouchableOpacity>

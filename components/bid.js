@@ -21,20 +21,7 @@ const Bid = ({ setSub }) => {
 
     return (
         <View style={styles.modalContainer}>       
-                <View style={styles.labelContainer}>
-                    <Text style={styles.labelText}>{label}</Text>
-                    <Text style={styles.timerText}>
-                        Timer: {Math.floor(timer / 60)}:{timer % 60 < 10 ? '0' : ''}{timer % 60}
-                    </Text>
-                    <View style={styles.acceptRejectContainer}>
-                        <Pressable style={styles.acceptButton} onPress={closeBid}>
-                            <Text style={styles.modaltext}>ACCEPT</Text>
-                        </Pressable>
-                        <Pressable style={styles.rejectButton} onPress={closeBid}>
-                            <Text style={styles.modaltext}>REJECT</Text>
-                        </Pressable>
-                    </View>
-                </View> 
+                
         </View>
     );
 };

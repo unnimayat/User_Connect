@@ -1,11 +1,14 @@
 import { View, Text, TextInput, Pressable } from "react-native";
 import React, { useState,useEffect } from "react"; 
 import Bid from "./bid";
-const Modal = ({ setVisible }) => {
+import socket from "../utils/socket";
+
+const Modal = ({ setVisible ,roomId}) => {
     const [amount, setAmount] = useState(""); 
     const [timer, setTimer] = useState(300); // 5 minutes in seconds
     const [label, setLabel] = useState("");
     const [sub, setSub] = useState(false);
+
     //👇🏻 Function that closes the Modal component
     const closeModal = () => setVisible(false);
     useEffect(() => {
@@ -16,11 +19,29 @@ const Modal = ({ setVisible }) => {
         return () => clearInterval(interval);
     }, []);
 
+    // Function to get current time
+    const getCurrentTime = () => {
+        const date = new Date();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        return `${hours}:${minutes}`;
+    };
+    const generateID = () => Math.random().toString(36).substring(2, 10);
+
     //👇🏻 Logs the group name to the console
-    const handleCreateRoom = () => {
+    const handleCreateBid = () => {
         console.log({ amount });
         setLabel(`Amount: $${amount}`); 
         setSub(true);
+        const currentTime = getCurrentTime();
+        const newMessage = {
+            id: generateID(),
+            sender: { role: 'user' },
+            contentType: 'bid',
+            content: { bidAmount: parseInt(amount) },
+            timestamp: currentTime
+        };
+        socket.emit('message', { room_id: roomId, newMessage })
         closeModal();
     };
     return (
@@ -33,7 +54,7 @@ const Modal = ({ setVisible }) => {
             />
 
             <View style={styles.modalbuttonContainer}>
-                <Pressable style={styles.modalbutton} onPress={handleCreateRoom}>
+                <Pressable style={styles.modalbutton} onPress={handleCreateBid}>
                     <Text style={styles.modaltext}>CREATE</Text>
                 </Pressable>
                 <Pressable
