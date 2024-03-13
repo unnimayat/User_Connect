@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
+import socket from "../utils/socket";
 
 const CategoryPage = ({ route }) => {
   const { category } = route.params;
@@ -60,6 +61,17 @@ const CategoryPage = ({ route }) => {
     fetchData();
   }, []);
 
+  useEffect(()=>{
+    console.log("Hey")
+    socket.on('room',(message)=>{
+      console.log(message)
+    })
+    socket.on('roomMessage', (message) => {
+      console.log('Received message in the room:', message);
+      // Handle the received message, e.g., display it in the UI
+    });
+  },[socket])
+
   const handleSearch = async (category) => {
     console.log(category)
     let requestBody = {
@@ -79,12 +91,12 @@ const CategoryPage = ({ route }) => {
 
   const handleBook = async (workerId) => {
     try {
-      const response = await axios.post(`${process.env.API_URL}/request/add-request`, {
+      const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/chat`, {
         userId: uid,
         workerId,
       });
-
-      console.log('Request added successfully:', response.data);
+      console.log('Chat opened successfully', response.data);
+      socket.emit("createRoom", response.data.chatId);
       // You may want to update the state or perform additional actions based on the response
     } catch (error) {
       console.error('Error adding request:', error);
@@ -102,7 +114,7 @@ const CategoryPage = ({ route }) => {
         style={styles.bookButton}
         onPress={() => handleBook(item._id)}
       >
-        <Text style={styles.bookButtonText}>Book</Text>
+        <Text style={styles.bookButtonText}>CHAT</Text>
       </TouchableOpacity>
     </View>
   );
