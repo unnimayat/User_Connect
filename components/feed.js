@@ -10,14 +10,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
 import { useState } from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-
+//const navigation = useNavigation();
 const handleHomePress = () => {
   // Handle navigation to home
 };
 
-const handleCreatePress = () => {
-  // Handle navigation to create
-};
+
 
 
 const CategoryCard = ({ category, onPress }) => {
@@ -47,9 +45,13 @@ const CreateJoin = () => {
   };
   const handleProfilePress = () => {
     // Handle navigation to profile
-    navigation.navigate('bidding');
+    navigation.navigate('profile');
   };
-  
+  const handleCreatePress = () => {
+    // Handle navigation to create
+    //navigation.navigate('feed');
+    navigation.navigate('createjoin'); 
+  };
   const categories = [
     'plumber',
     'Electrician',

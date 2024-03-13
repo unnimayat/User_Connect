@@ -139,68 +139,7 @@ const Profile = () => {
 
   return (
     <View style={styles.container}>
-      {/* Upper div */}
-      
-      <View style={styles.upperDiv}>
-        <View style={styles.upperLeft}>
-          <View style={styles.profileCircle}>
-            <Ionicons name="person-circle-outline" size={115} color="#A06D95" style={styles.proicon}/>
-          </View>
-          <TouchableOpacity style={styles.editButton} onPress={handleEditPress}>
-            <Ionicons name="pencil-outline" size={20} color="#FFFFFF" />
-          </TouchableOpacity>
-          
-        </View>
-        
-      </View>
-      
-      
-
-      {/* Lower div */}
-      <View style={styles.lowerDiv}>
-        <View style={styles.contents}>
-          {/* ... Contents ... */}
-          {/* <View style={styles.tableContainer}>
-            <Text style={styles.tableHeaderText}>Date</Text>
-            <Text style={styles.tableHeaderText}>Amount</Text>
-            {tableData.map((item, index) => (
-              <View key={index} style={styles.tableRow}>
-                <Text style={styles.rowDate}>{item.date}</Text>
-                <Text style={styles.rowAmount}>{item.amount}</Text>
-              </View>
-            ))}
-          </View> */}
-           <View style={styles.info}>
-            <Text style={styles.name}>{uname}</Text>
-            <Text style={styles.id}>{uid}</Text> 
-          </View>
-          <View style={styles.tableContainer}>
-            <View style={styles.tableHeader}>
-              <Text style={styles.headerCell}>Date</Text>
-              <Text style={styles.headerCell}>Amount Paid</Text>
-            </View>
-            {paymentlist?.map((data, index) => (
-              <View style={styles.tableRow} key={index}>
-                <Text style={styles.tableCell}>{data.date}</Text>
-                <Text style={styles.tableCell}>{data.amount}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-      </View>
-
-      {/* Navbar */}
-      <View style={styles.navbar}>
-        <TouchableOpacity style={styles.navbarButton} onPress={handleHomePress}>
-          <Ionicons name="home-outline" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navbarButton} onPress={handleCreatePress}>
-          <Ionicons name="create-outline" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navbarButton} onPress={handleProfilePress}>
-          <Ionicons name="person-outline" size={20} color="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
+       <Text>Profile</Text>
     </View>
   );
 };

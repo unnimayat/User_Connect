@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, TextInput, View, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, TextInput, View, TouchableOpacity, Text ,FlatList} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 //import Ionicons from 'react-native-vector-icons/Ionicons'; 
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -12,22 +12,9 @@ import axios from 'axios';
 export default function CreateJoin() {
   const [unit_name, setName] = useState('');
   const [unit_id, setunitId] = useState('');
-  const [createLabel, setCreateLabel] = useState(true);
-  const [joinLabel, setJoinLabel] = useState(false);
-  const navigation = useNavigation();
-  const [uid, setUId] = useState(''); 
-  const [unitid, setId] = useState(''); 
-  const [invitestatus, setInvitestatus] = useState(null)
-  const [invitation,setInvitation]=useState(false);
+  const [workers, setWorkers] = useState([]);
 
-  
-  const options = [
-    { label: 'english', value: 'en' },
-    { label: 'malayalam', value: 'mal' }
-  ];
-
-  const { t, i18n } = useTranslation();
-
+ 
   const retrieveToken = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -58,160 +45,32 @@ export default function CreateJoin() {
     fetchData();
   }, [])
 
-  useEffect(() => {
-    if (uid != '') {
-      axios.get(`${process.env.API_URL}/users/${uid}/invited`)
-        .then(response => {
-          const { is_invited } = response.data;
-          console.log(is_invited)
-          setInvitestatus(is_invited)
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    }
-  }, [uid]);
+  useEffect(() => { 
+    const fetchWorkers = async () => {
+      try { 
+        const response = await fetch('https://api.example.com/workers');
+        const data = await response.json();
+        setWorkers(data.users); 
+      } catch (error) {
+        console.error('Error fetching workers:', error);
+      }
+    };
 
-  const handleNameChange = (value) => {
-    setName(value);
-  };
-
-  const handleIdChange = (value) => {
-    setId(value);
-  };
-  const handleUnitIdChange = (value) => {
-    setunitId(value);
-  };
-
-  const handleButtonCreatePress = () => {
-    setCreateLabel(true);
-    setJoinLabel(false);
-  };
-
-  const handleButtonJoinPress = () => {
-    setCreateLabel(false);
-    setJoinLabel(true);
-    axios.get(`${process.env.API_URL}/invitedunits/${uid}`)
-    .then(response=>{
-      console.log(response);
-      const {unitId,unitName}=response.data;
-      setInvitation(true);
-      setName(unitName);
-      setunitId(unitId);
-    })
-  };
-
-
-const handleButtonJoin=()=>{
-axios.post(`${process.env.API_URL}/joinunit`,{unitId:unit_id,userId:uid})
-.then(response=>{
-  console.log(response);
-  console.log('hi');
-  navigation.navigate('unit')
-})
-  }
-  const handleButtonPress = () => {
-    axios.post(`${process.env.API_URL}/createunit`, { unit_name, uid })
-      .then(response => {
-        console.log(response)
-        if (response.data.status) {
-          // Login successful, navigate to the next screen
-          console.log(response.data.status)
-          navigation.navigate('unit');
-        } else {
-          console.log('Creation unsuccessful');
-        }
-      })
-      .catch(error => {
-        console.log('error');
-      });
-    navigation.navigate('createjoin');
-  };
-
-  const handleHomePress = () => {
-    navigation.navigate('feed');
-  };
-  const handleProfilePress = () => {
-    navigation.navigate('profile');
-  };
-  const handleCreatePress = () => {
-    console.log("Pressed join channel")
-    console.log(invitestatus)
-    if (invitestatus === 2) {
-      navigation.navigate('unit');
-    }
-    else { navigation.navigate('createjoin'); }
-  };
-
+    fetchWorkers();
+  }, []); 
+ 
   return (
     <View style={styles.container}>
-      {/* button */}
-      <View style={styles.topbutton}>
-        <TouchableOpacity
-          style={[styles.topButton, createLabel ? styles.selectedButton : styles.nonselectedButton]}
-          onPress={handleButtonCreatePress}
-        >
-          <Text style={[styles.buttonText, createLabel ? styles.selectedButtonText : styles.nonselectedButtonText]}>{t("CREATE")}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.topButton, joinLabel ? styles.selectedButton : styles.nonselectedButton]}
-          onPress={handleButtonJoinPress}
-        >
-          <Text style={[styles.buttonText, joinLabel ? styles.selectedButtonText : styles.nonselectedButtonText]}>{t("JOIN")}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* label */}
-      {createLabel ? (
-        <View style={styles.label}>
-          <Text style={styles.loginText1}>{t('CREATE')}</Text>
-          <TextInput
-            style={styles.inputname}
-            placeholder={t("Enter Unit Name")}
-            placeholderTextColor="#9B6D92"
-            value={unit_name}
-            onChangeText={handleNameChange}
-          />
-          <TextInput
-            style={styles.inputname}
-            placeholder={t("Enter Unit Id")}
-            placeholderTextColor="#9B6D92"
-            value={unit_id}
-            onChangeText={handleUnitIdChange}
-          />
-          <TouchableOpacity style={styles.loginbtn} onPress={handleButtonPress}>
-            <Text style={styles.loginText}>{t('CREATE')}</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (<View>{ invitation?(
-        <View style={styles.label}>
-          <Text style={styles.loginText1}>{t("JOIN")}</Text>
-          <View style={styles.container}>
-            <Icon name="drafts" size={30} color="#A06D95" style={styles.icon} />
-            <Text style={styles.loginText1}>Invitation from Group {unit_name}</Text>
-            <TouchableOpacity style={styles.loginbtn} onPress={handleButtonJoin}>
-            <Text style={styles.loginText}>{t("JOIN")}</Text>
-          </TouchableOpacity>
+       <Text>list</Text>
+       <FlatList
+        data={workers}
+        renderItem={({ item }) => (
+          <View style={{ marginBottom: 10 }}>
+            <Text>{item.id}</Text> 
           </View>
-        </View>
-      ):(<View style={styles.label}>
-        <Text style={styles.loginText1}>{t("Sorry You have no invitation")}</Text>
-      </View>)
-        
-      }</View>)}
-
-      {/* navbar */}
-      <View style={styles.navbar}>
-        <TouchableOpacity style={styles.navbarButton} onPress={handleHomePress}>
-          <Ionicons name="home-outline" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navbarButton} onPress={handleCreatePress}>
-          <Ionicons name="create-outline" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navbarButton} onPress={handleProfilePress}>
-          <Ionicons name="person-outline" size={20} color="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
+        )}
+        keyExtractor={(item) => item.id.toString()}
+      />
     </View>
   );
 }
