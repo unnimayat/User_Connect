@@ -13,7 +13,7 @@ export default function CreateJoin() {
   const [unit_name, setName] = useState('');
   const [unit_id, setunitId] = useState('');
   const [workers, setWorkers] = useState([]);
-
+  const [uid,setUId]=useState();
  
   const retrieveToken = async () => {
     try {
@@ -23,6 +23,7 @@ export default function CreateJoin() {
         console.log('Token retrieved successfully');
         const decodedToken = jwt_decode(token);
         const { name, id } = decodedToken;
+        setUId(decodedToken.userId)
         console.log(name)
         console.log(id)
         return { name, id };
@@ -38,31 +39,35 @@ export default function CreateJoin() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { name, id } = await retrieveToken();
-      console.log(id);
-      setUId(id);
+      await retrieveToken(); 
     };
     fetchData();
   }, [])
 
   useEffect(() => { 
     const fetchWorkers = async () => {
-      try { 
-        const response = await fetch('https://api.example.com/workers');
-        const data = await response.json();
-        setWorkers(data.users); 
+      console.log('id',uid);
+      try {
+        if(uid){
+          const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/chat/workers`, {
+            userId: uid,
+          });
+        console.log('successful', response.data);
+        }
+        //socket.emit("createRoom", response.data.chatId);
+        // You may want to update the state or perform additional actions based on the response
       } catch (error) {
-        console.error('Error fetching workers:', error);
+        console.error('Error adding request for:', error);
       }
     };
 
     fetchWorkers();
-  }, []); 
+  }, [uid]); 
  
   return (
     <View style={styles.container}>
        <Text>list</Text>
-       <FlatList
+       {/* <FlatList
         data={workers}
         renderItem={({ item }) => (
           <View style={{ marginBottom: 10 }}>
@@ -70,7 +75,7 @@ export default function CreateJoin() {
           </View>
         )}
         keyExtractor={(item) => item.id.toString()}
-      />
+      /> */}
     </View>
   );
 }
