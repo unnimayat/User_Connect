@@ -89,20 +89,22 @@ const CategoryPage = ({ route }) => {
       });
   };
 
-  const handleBook = async (workerId) => {
-    try {
-      const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/chat`, {
-        userId: uid,
-        workerId,
-      });
-      console.log('Chat opened successfully', response.data);
-      socket.emit("createRoom", response.data.chatId);
-      // You may want to update the state or perform additional actions based on the response
-    } catch (error) {
-      console.error('Error adding request:', error);
-    }
+  // const handleBook = async (workerId) => {
+  //   try {
+  //     const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/chat`, {
+  //       userId: uid,
+  //       workerId,
+  //     });
+  //     console.log('Chat opened successfully', response.data);
+  //     socket.emit("createRoom", response.data.chatId);
+  //     // You may want to update the state or perform additional actions based on the response
+  //   } catch (error) {
+  //     console.error('Error adding request:', error);
+  //   }
+  // };
+  const handleBook = (workerId) => {
+    navigation.navigate('bidding', { workerId });
   };
-
   const renderItem = ({ item }) => (
     <View style={styles.workerItem}>
       <View style={styles.workerAvatar} />
@@ -112,7 +114,7 @@ const CategoryPage = ({ route }) => {
       </View>
       <TouchableOpacity
         style={styles.bookButton}
-        onPress={() => handleBook(item._id)}
+        onPress={() => handleBook(item.username)}
       >
         <Text style={styles.bookButtonText}>CHAT</Text>
       </TouchableOpacity>
