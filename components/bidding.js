@@ -8,7 +8,8 @@ import { useNavigation } from '@react-navigation/native';
 import Modal from "./Modal";
 const { width } = Dimensions.get('window');
 
-const Bidding = () => {
+const Bidding = ({ route }) => {
+  const { workerId } = route.params;
   const navigation = useNavigation();
   const [menuVisible, setMenuVisible] = useState(false); 
   const [newMessage, setNewMessage] = useState('');
@@ -70,9 +71,9 @@ const [message, setMessage] = useState('');
   const [visible, setVisible] = useState(false);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container}> 
         <View style={styles.head}>
-            <Text style={styles.heading}>Chat With Tom</Text>
+            <Text style={styles.heading}>Chat With {workerId}</Text>
             <TouchableOpacity style={styles.sendButton}  onPress={() => setVisible(true)}>
               <Text style={styles.sendButtonText}>Bid</Text>
             </TouchableOpacity>
