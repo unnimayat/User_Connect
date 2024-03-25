@@ -14,16 +14,7 @@ export default function Login() {
       await AsyncStorage.setItem('token', token);
       console.log('Token stored successfully');
       console.log(token)
-
-      // Decode the token to get user details
-
-      // const decodedToken = jwt_decode(token);
-      // const { name, id } = decodedToken;
-
-      // Store user details in AsyncStorage
-      // await AsyncStorage.setItem('userId', id);
-      // await AsyncStorage.setItem('username', name);
-
+ 
     } catch (error) {
       console.error('Failed to store token', error);
     }
@@ -31,9 +22,7 @@ export default function Login() {
 
   const retrieveToken = async () => {
     try {
-      const token = await AsyncStorage.getItem('token');
-      // const userId = await AsyncStorage.getItem('userId');
-      // const username = await AsyncStorage.getItem('username');
+      const token = await AsyncStorage.getItem('token'); 
       if (token) {
         console.log('Token retrieved successfully');
         return token;
@@ -59,12 +48,9 @@ export default function Login() {
     console.log(process.env.EXPO_PUBLIC_API_URL)
     axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/login`, { username, password })
       .then(response => {
-        // Handle the response from the server
-        // setName({ name });
-        // console.log(name);
+        
         console.log(response)
-        if (response.request.status==200) {
-          // Login successful, navigate to the next screen
+        if (response.request.status==200) { 
           const token = response.data.token;
           storeToken(token)
           console.log('login successful');
@@ -86,12 +72,7 @@ export default function Login() {
 
   const handlePasswordChange = (value) => {
     setPassword(value);
-  };
-
-  // const handleButtonPress = () => {
-  //   // Handle the login logic and navigate to the next screen
-  //   navigation.navigate('feed');
-  // };
+  }; 
   const handleSignIn = () => {
     // Handle the login logic and navigate to the next screen
     navigation.navigate('signin');
