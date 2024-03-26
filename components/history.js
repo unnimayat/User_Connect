@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
 import axios from 'axios';
 
-export default function CreateJoin() {
+export default function History() {
   const [unit_name, setName] = useState('');
   const [unit_id, setunitId] = useState('');
   const [workers, setWorkers] = useState([]);
@@ -52,7 +52,8 @@ export default function CreateJoin() {
           const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/chat/workers`, {
             userId: uid,
           });
-        console.log('successful', response.data);
+        console.log('successful', response.data.workers);
+        setWorkers(response.data.workers)
         }
         //socket.emit("createRoom", response.data.chatId);
         // You may want to update the state or perform additional actions based on the response
@@ -67,15 +68,18 @@ export default function CreateJoin() {
   return (
     <View style={styles.container}>
        <Text>list</Text>
-       {/* <FlatList
+       <FlatList
         data={workers}
         renderItem={({ item }) => (
-          <View style={{ marginBottom: 10 }}>
-            <Text>{item.id}</Text> 
-          </View>
+          // <View style={{ marginBottom: 10 }}>
+          //   <Text>{item.name}</Text> 
+          // </View>
+             <View style={{ marginBottom: 10,backgroundColor:'#fffff9',borderRadius:8 }}>
+             <Text style={{fontSize:14,color:'black',fontWeight:'bold'}}>{item.name}</Text> 
+           </View>
         )}
         keyExtractor={(item) => item.id.toString()}
-      /> */}
+      />
     </View>
   );
 }

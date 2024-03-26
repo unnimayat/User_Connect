@@ -1,5 +1,4 @@
-// CreateJoin.js
-
+ 
 import React from 'react';
 import { useEffect } from 'react';
 import { StyleSheet, View, ScrollView, TouchableOpacity, Text } from 'react-native';
@@ -37,7 +36,7 @@ const CategoryCard = ({ category, onPress }) => {
 };
 
 
-const CreateJoin = () => {
+const Feed = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState('')
   const handleCategoryPress = (category) => {
@@ -50,7 +49,7 @@ const CreateJoin = () => {
   const handleCreatePress = () => {
     // Handle navigation to create
     //navigation.navigate('feed');
-    navigation.navigate('createjoin'); 
+    navigation.navigate('history'); 
   };
   const categories = [
     'plumber',
@@ -227,4 +226,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateJoin;
+export default Feed;
