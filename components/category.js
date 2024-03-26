@@ -6,6 +6,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
 import socket from "../utils/socket";
+import * as Location from 'expo-location';
 
 const CategoryPage = ({ route }) => {
   const { category } = route.params;
@@ -20,6 +21,7 @@ const CategoryPage = ({ route }) => {
   const [matchingLocations, setMatchingLocations] = useState([]);
   const [matchingWorkers, setMatchingWorkers] = useState([]);
   const [location, setLocation] = useState('');
+  const [address, setAddress] = useState('');
 
   const retrieveToken = async () => {
     try {
@@ -51,6 +53,37 @@ const CategoryPage = ({ route }) => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        if (uid) {
+          const location = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/user/location/${uid}`)
+          console.log(location.data);
+          setLocation(location.data.location)
+          setAddress(location.data.address)
+        }
+      }
+      catch (error) {
+        console.log("Error fetching location", error)
+      }
+    };
+    fetchLocation();
+  }, [uid])
+
+  // useEffect(() => {
+  //   const fetchAddress = async () => {
+  //     try {
+  //       const response = await Location.reverseGeocodeAsync(location);
+  //       console.log(response)
+  //       setAddress(response[0].formattedAddress)
+  //     }
+  //     catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+  //   fetchAddress();
+  // },[location])
 
   // useEffect(()=>{
   //   console.log("Hey")
@@ -93,20 +126,20 @@ const CategoryPage = ({ route }) => {
   //     console.error('Error adding request:', error);
   //   }
   // };
-  const handleBook = async(workerId) => {
-    console.log("uid",uid)
-    console.log("workerId",workerId)
+  const handleBook = async (workerId) => {
+    console.log("uid", uid)
+    console.log("workerId", workerId)
     try {
-        const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/chat`, {
-          userId: uid,
-          workerId,
-        });
-        console.log('Chat opened successfully', response.data);
-        socket.emit("createRoom", response.data.chatId);
-        // You may want to update the state or perform additional actions based on the response
-      } catch (error) {
-        console.error('Error adding request:', error);
-      }
+      const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/chat`, {
+        userId: uid,
+        workerId,
+      });
+      console.log('Chat opened successfully', response.data);
+      socket.emit("createRoom", response.data.chatId);
+      // You may want to update the state or perform additional actions based on the response
+    } catch (error) {
+      console.error('Error adding request:', error);
+    }
     navigation.navigate('bidding', { workerId });
   };
 
@@ -135,6 +168,7 @@ const CategoryPage = ({ route }) => {
 
       <View>
         <Ionicons name="search" size={20} color="#777" style={styles.searchIcon} onPress={() => handleSearch(category)} />
+        <Text>Workers near your location {address}</Text>
         <Text>Click for gigs</Text>
         {/* <TextInput
           style={styles.searchInput}

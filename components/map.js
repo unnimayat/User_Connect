@@ -71,6 +71,18 @@ export default function App() {
         })();
     }, []);
 
+    const fetchAddress = async (loc_coord) => {
+        try {
+            const response = await Location.reverseGeocodeAsync(loc_coord);
+            console.log(response)
+            return response[0].formattedAddress
+        }
+        catch (error) {
+            console.log(error)
+            return ""
+        }
+    }
+
     const handleMarkerPress = (e) => {
         console.log(e.nativeEvent.coordinate);
         setMarkerPosition(e.nativeEvent.coordinate);
@@ -83,14 +95,16 @@ export default function App() {
                 setUId(username);
 
                 if (markerPosition) {
+                    const loc_address = await fetchAddress(markerPosition)
                     const requestBody = {
                         userId: uid,
                         location: {
                             latitude: markerPosition.latitude,
                             longitude: markerPosition.longitude,
-                        }
+                        },
+                        address: loc_address
                     };
-
+                    console.log({requestBody});
                     const r = JSON.stringify(requestBody);
                     console.log(r);
 

@@ -60,18 +60,22 @@ const Bidding = ({ route }) => {
 
 
   useEffect(() => {
-    console.log("Hey")
-    socket.on('room', (message) => {
-      console.log(message)
-    })
-    socket.on('roomMessage', (message) => {
-      console.log('Received message in the room:', message);
+    console.log("Hey from socket");
+    socket.on('newMessage', (newMessage) => {
+      console.log('Received message in the room:', newMessage);
       // Handle the received message, e.g., display it in the UI
+      setMessages(prevMessages => [...prevMessages, newMessage]);
     });
-  }, [socket])
+
+    // Cleanup function to unsubscribe from socket
+    return () => {
+      socket.off('newMessage');
+    };
+  }, []);
+
 
   useEffect(() => {
-    async function fetchData(){
+    async function fetchData() {
       try {
         if (uid) {
           const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/chat`, {
@@ -92,7 +96,7 @@ const Bidding = ({ route }) => {
     fetchData();
   }, [uid])
 
-  const closeBid = () => {};
+  const closeBid = () => { };
   // Function to get current time
   const getCurrentTime = () => {
     const date = new Date();
@@ -103,17 +107,17 @@ const Bidding = ({ route }) => {
 
   // Function to handle sending message
   const sendMessage = () => {
-    console.log("message",message)
+    console.log("message", message)
     if (message.trim() !== '') {
       const currentTime = getCurrentTime();
       const newMessage = {
-        id: generateID(),   
+        id: generateID(),
         sender: { role: 'user' },
         contentType: 'text',
         content: { text: message },
         timestamp: currentTime
       };
-      socket.emit('message', { room_id: roomId, newMessage})
+      socket.emit('message', { room_id: roomId, newMessage })
       setMessages([...messages, newMessage]);
       console.log(messages)
       setMessage('');
@@ -154,7 +158,7 @@ const Bidding = ({ route }) => {
 
         <ScrollView style={styles.chatContainer}>
           {messages?.map((msg) => (
-           msg.contentType==="text"?( <View key={msg.id} style={styles.messageContainer}>
+            msg.contentType === "text" ? (<View key={msg.id} style={styles.messageContainer}>
               <View style={styles.profileIcon}>
                 {/* Profile Icon */}
                 {/* You can place your profile icon component here */}
@@ -167,7 +171,7 @@ const Bidding = ({ route }) => {
                 <Text style={styles.messageText}>{msg.content.text}</Text>
 
               </View>
-            </View>):
+            </View>) :
               (<View key={msg.id}>
                 <View style={styles.labelContainer}>
                   <Text style={styles.labelText}>{label}</Text>
@@ -182,13 +186,13 @@ const Bidding = ({ route }) => {
                       <Text style={styles.modaltext}>REJECT</Text>
                     </Pressable>
                   </View>
-                </View> 
-            </View>)
+                </View>
+              </View>)
           ))}
         </ScrollView>
         {/* Bidding Chat Messages */}
 
-        {visible ? <Modal setVisible={setVisible} roomId={roomId}/> : ""}
+        {visible ? <Modal setVisible={setVisible} roomId={roomId} /> : ""}
 
         {/* Message Input and Send Button */}
         <View style={styles.inputContainer}>
