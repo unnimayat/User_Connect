@@ -40,24 +40,39 @@ const Profile = () => {
   const [invitestatus, setInvitestatus] = useState(null)
   const navigation = useNavigation();
  
-  
- 
-  
-  const handleCreatePress = () => {
-    console.log("Pressed join channel")
-    console.log(invitestatus)
-    if (invitestatus === 2) {
-      navigation.navigate('unit');
-    }
-    else { navigation.navigate('history'); }
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
+
+  const fetchUserDetails = async () => {
+    // try {
+    //   const response = await axios.get('https://api.example.com/user');
+    //   setUser(response.data);
+    // } catch (error) {
+    //   console.error('Error fetching user details:', error);
+    // }
   };
 
-    
+  if (!user) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
- 
   return (
     <View style={styles.container}>
-       <Text>Profile</Text>
+      <Text style={styles.label}>Username:</Text>
+      {/* <Text style={styles.text}>{user.username}</Text> */}
+      
+      <Text style={styles.label}>Email:</Text>
+      {/* <Text style={styles.text}>{user.email}</Text> */}
+      
+      <Text style={styles.label}>Address:</Text>
+      {/* <Text style={styles.text}>{user.address}</Text> */}
     </View>
   );
 };
@@ -65,9 +80,17 @@ const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  label: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  text: {
+    fontSize: 16,
+    marginBottom: 10,
   },
   
 });
