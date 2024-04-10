@@ -1,37 +1,28 @@
-import React, { useState } from 'react';
-
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
+import socket from "../utils/socket";
+import * as Location from 'expo-location';
+
 const CategoryPage = ({ route }) => {
   const { category } = route.params;
   const navigation = useNavigation();
-  const storeToken = async (token) => {
-    try {
-      await AsyncStorage.setItem('token', token);
-      console.log('Token stored successfully');
-      console.log(token)
 
-      // Decode the token to get user details
 
-      // const decodedToken = jwt_decode(token);
-      // const { name, id } = decodedToken;
+  const [userId, setUserId] = useState('');
+  const [uid, setUId] = useState('');
+  const [workerId, setWorkerId] = useState('');
+  const [username, setUserName] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [matchingLocations, setMatchingLocations] = useState([]);
+  const [matchingWorkers, setMatchingWorkers] = useState([]);
+  const [location, setLocation] = useState('');
+  const [address, setAddress] = useState('');
 
-      // Store user details in AsyncStorage
-      // await AsyncStorage.setItem('userId', id);
-      // await AsyncStorage.setItem('username', name);
-
-    } catch (error) {
-      console.error('Failed to store token', error);console.log();
-    }
-  };
-  const [userId,setUserId]=useState('');
-  const [workerId,setWorkerId]=useState('')
-  const [username,setUserName]=useState('')
   const retrieveToken = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -40,8 +31,9 @@ const CategoryPage = ({ route }) => {
         console.log('Token retrieved successfully');
         const decodedToken = jwt_decode(token);
         const { username, password } = decodedToken;
-        setUserId(decodedToken.userId);
-        console.log(username) 
+        setUserId(username);
+        setUId(decodedToken.userId)
+        console.log("username", username);
         return { username, password };
       } else {
         console.log('Token not found');
@@ -52,106 +44,150 @@ const CategoryPage = ({ route }) => {
       return null;
     }
   };
+
   useEffect(() => {
     const fetchData = async () => {
       const { username, password } = await retrieveToken();
-      console.log(username); 
+      console.log(username);
       setUserName(username);
     };
     fetchData();
-  }, [])
-  const [searchQuery, setSearchQuery] = useState('');
-  const [matchingLocations, setMatchingLocations] = useState([]);
-  const [matchingWorkers, setMatchingWorkers] = useState([]);
-  const [location,setLocation]=useState('');
-  const handleSearch = async () => {
-    try {
-      // Call the backend route to fetch matching workers
-      const response = await fetch(`https://connect-q46w.onrender.com/emp/workers/${category}/${location}`);
-      const workers = await response.json();
-      console.log('Matching workers:', workers);
-      // Assuming you have a state variable like matchingWorkers to store the result
-      setMatchingWorkers(workers);
-    } catch (error) {
-      console.error('Error fetching workers:', error);
-      // Handle errors as needed
+  }, []);
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        if (uid) {
+          const location = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/user/location/${uid}`)
+          console.log(location.data);
+          setLocation(location.data.location)
+          setAddress(location.data.address)
+        }
+      }
+      catch (error) {
+        console.log("Error fetching location", error)
+      }
+    };
+    fetchLocation();
+  }, [uid])
+
+  // useEffect(() => {
+  //   const fetchAddress = async () => {
+  //     try {
+  //       const response = await Location.reverseGeocodeAsync(location);
+  //       console.log(response)
+  //       setAddress(response[0].formattedAddress)
+  //     }
+  //     catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+  //   fetchAddress();
+  // },[location])
+
+  // useEffect(()=>{
+  //   console.log("Hey")
+  //   socket.on('room',(message)=>{
+  //     console.log(message)
+  //   })
+  //   socket.on('roomMessage', (message) => {
+  //     console.log('Received message in the room:', message);
+  //     // Handle the received message, e.g., display it in the UI
+  //   });
+  // },[socket])
+
+  const handleSearch = async (category) => {
+    console.log(category)
+    let requestBody = {
+      profession: category,
+      userId: userId,
     }
-  };
-  const handleBook = async (workerId) =>{
-    // Perform booking logic using the studentId
-    // For example, you can navigate to a booking screen or show a confirmation message
-    const response = await axios.post('https://connect-q46w.onrender.com/request/add-request', {
-  userId ,
-   workerId 
-});
-
-
-    // Handle the response as needed
-    console.log('Request added successfully:', response.data); 
-    // Add your logic here
+    console.log(requestBody)
+    axios.post(`${process.env.EXPO_PUBLIC_API_URL}/emp/listworkers`, requestBody)
+      .then(response => {
+        console.log(response.data);
+        setMatchingWorkers(response.data)
+      })
+      .catch(error => {
+        console.log('Error:', error);
+      });
   };
 
-  // const handleLocationPress = (location) => {
-  //   // Navigate to the listing page with the selected location
-  //   navigation.navigate('ListingPage', { category, location });
+  // const handleBook = async (workerId) => {
+  //   try {
+  //     const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/chat`, {
+  //       userId: uid,
+  //       workerId,
+  //     });
+  //     console.log('Chat opened successfully', response.data);
+  //     socket.emit("createRoom", response.data.chatId);
+  //     // You may want to update the state or perform additional actions based on the response
+  //   } catch (error) {
+  //     console.error('Error adding request:', error);
+  //   }
   // };
-  const renderItem = ({ item }) => ( 
-    <View style={styles.studentItem}>
-      {/* Student Avatar (you can replace this with an image) */}
-      <View style={styles.studentAvatar} />
-      
-      {/* Student Information */}
-      <View style={styles.studentInfo}>
-        <Text style={styles.studentName}>ID: {item.empid}</Text>
-        <Text style={styles.studentDetails}>Name: {item.username}</Text> 
-        {/* Add more details as needed */}
+  const handleBook = async (workerId) => {
+    console.log("uid", uid)
+    console.log("workerId", workerId)
+    try {
+      const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/chat`, {
+        userId: uid,
+        workerId,
+      });
+      console.log('Chat opened successfully', response.data);
+      socket.emit("createRoom", response.data.chatId);
+      // You may want to update the state or perform additional actions based on the response
+    } catch (error) {
+      console.error('Error adding request:', error);
+    }
+    navigation.navigate('bidding', { workerId });
+  };
+
+  const renderItem = ({ item }) => (
+    <View style={styles.workerItem}>
+      <View style={styles.workerAvatar} />
+      <View style={styles.workerInfo}>
+        <Text style={styles.workerName}>ID: {item.empid}</Text>
+        <Text style={styles.workerDetails}>Name: {item.username}</Text>
       </View>
       <TouchableOpacity
-      style={styles.bookButton}
-      onPress={() => handleBook(item._id)} // Replace with your booking logic
-    >
-      <Text style={styles.bookButtonText}>Book</Text>
-    </TouchableOpacity>
+        style={styles.bookButton}
+        onPress={() => handleBook(item._id)}
+      >
+        <Text style={styles.bookButtonText}>CHAT</Text>
+      </TouchableOpacity>
     </View>
   );
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Ionicons name="location" size={24} color="#000"  />
+        <Ionicons name="location" size={28} color="#000" />
+        <Text>Workers near your location {address}</Text>
         <Text style={styles.categoryText}>{category}</Text>
       </View>
-      
-      <View style={styles.searchContainer}> 
-      <Ionicons name="search" size={20} color="#777" style={styles.searchIcon} onPress={() => handleSearch()} />
+{/* 
+      <View>
+        <Ionicons name="search" size={20} color="#777" style={styles.searchIcon} onPress={() => handleSearch(category)} />  
+        <Text>Click for gigs</Text>
+      </View> */}
+      <View style={styles.searchContainer}>
+  <Text style={styles.searchLabel}>
+    <Ionicons name="search" size={20} color="#777" style={styles.searchIcon} onPress={() => handleSearch(category)} />  
+  </Text>
+  <TextInput
+    style={styles.searchInput}
+    placeholder="Search for gigs"
+    placeholderTextColor="#777"
+    onChangeText={text => handleSearch(text)}
+  />
+</View>
 
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search for places..."
-          placeholderTextColor="#777"
-          value={location}
-          onChangeText={(location) => {
-            setLocation(location);
-          }}
-        />
-      </View>
-      {/* <FlatList
-        data={matchingWorkers}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleLocationPress(item)}>
-            <View style={styles.workerItem}>
-              <Text>ID: {item.id}</Text>
-              <Text>Name: {item.name}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      /> */}
       <FlatList
         data={matchingWorkers}
         keyExtractor={(item) => item.empid.toString()}
         renderItem={renderItem}
       />
-       
     </View>
   );
 };
@@ -181,28 +217,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginBottom: 16,
   },
-  studentItem: {
+  workerItem: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
-  studentAvatar: {
+  workerAvatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
     marginRight: 16,
-    backgroundColor: '#e0e0e0', // You can set a background color or use an image
+    backgroundColor: '#e0e0e0',
   },
-  studentInfo: {
+  workerInfo: {
     flex: 1,
   },
-  studentName: {
+  workerName: {
     fontSize: 16,
     fontWeight: 'bold',
   },
-  studentDetails: {
+  workerDetails: {
     fontSize: 14,
     color: '#666',
   },
@@ -214,22 +250,35 @@ const styles = StyleSheet.create({
     height: 40,
     color: '#000',
   },
-  locationItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    paddingVertical: 8,
-  },
   bookButton: {
-    backgroundColor: 'black', // Button background color
+    backgroundColor: 'black',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
-    marginLeft: 'auto', // Move the button to the right side
+    marginLeft: 'auto',
   },
-  
   bookButtonText: {
-    color: '#fff', // Button text color
+    color: '#fff',
     fontWeight: 'bold',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#777',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+  searchLabel: {
+    marginRight: 10,
+  },
+  searchIcon: {
+    marginRight: 5,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    color: '#333',
   },
 });
 

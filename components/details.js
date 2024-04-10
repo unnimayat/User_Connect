@@ -4,9 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
-export default function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+export default function Details() {
+  const [time, setTime] = useState('');
+  const [date, setDate] = useState('');
   const navigation = useNavigation();
 
   const storeToken = async (token) => {
@@ -46,60 +46,38 @@ export default function Login() {
   };
   const handleButtonPress = () => {
     console.log(process.env.EXPO_PUBLIC_API_URL)
-    axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/login`, { username, password })
-      .then(response => {
-        
-        console.log(response)
-        if (response.request.status==200) { 
-          const token = response.data.token;
-          storeToken(token)
-          console.log('login successful');
-          
-          navigation.navigate('feed');
-        } else {
-          console.log('login unsuccessful');
-        }
-      })
-      .catch(error => {
-        console.log('error');
-      });
-
+    console.log('details page');
   };
 
-  const handleNameChange = (value) => {
-    setUsername(value);
+  const handleTimeChange = (value) => {
+    setTime(value);
   };
 
-  const handlePasswordChange = (value) => {
-    setPassword(value);
+  const handleDateChange = (value) => {
+    setDate(value);
   }; 
-  const handleSignIn = () => {
-    // Handle the login logic and navigate to the next screen
-    navigation.navigate('signin');
-  };
 
   return (
     <View style={styles.container}>
       <View style={styles.label}>
-        <Text style={styles.loginText1}>Login</Text>
+        <Text style={styles.loginText1}>Enter Details</Text>
         <TextInput
           style={styles.inputname}
-          placeholder="Enter Name"
+          placeholder="Enter Time"
           placeholderTextColor="#fff"
-          value={username}
-          onChangeText={handleNameChange}
+          value={time}
+          onChangeText={handleTimeChange}
         />
         <TextInput
           style={styles.inputname}
-          placeholder="Enter Id"
+          placeholder="Enter date"
           placeholderTextColor="#fff"
-          value={password}
+          value={date}
           secureTextEntry={true}
-          onChangeText={handlePasswordChange}
-        />
-        <Text  style={styles.newlogin} onPress={handleSignIn}>Sign Up?</Text>
+          onChangeText={handleDateChange}
+        /> 
         <TouchableOpacity style={styles.loginbtn} onPress={handleButtonPress}>
-          <Text style={styles.loginText}>Login</Text>
+          <Text style={styles.loginText}>SUBMIT</Text>
         </TouchableOpacity>
       </View>
     </View>

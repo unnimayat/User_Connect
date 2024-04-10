@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
+import socket from "../utils/socket";
+
 export default function SignIn() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -11,6 +13,7 @@ export default function SignIn() {
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const navigation = useNavigation();
+
 
   const storeToken = async (token) => {
     try {
@@ -79,7 +82,8 @@ export default function SignIn() {
 
   const handleButtonPress = () => {
     // Handle the login logic and navigate to the next screen
-    axios.post('https://connect-q46w.onrender.com/user/register', { username, password,email,phone,address })
+    console.log("button pressed")
+    axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/register`, { username, password,email,phone,address })
     .then(response => {
       console.log(response);
       const successMessage = 'User registered successfully';
