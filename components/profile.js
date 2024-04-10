@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, TextInput } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, TextInput ,Image} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -55,43 +55,89 @@ const Profile = () => {
     // }
   };
 
-  if (!user) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
+  // if (!user) {
+  //   return (
+  //     <View style={styles.container}>
+  //       <Text>Loading...</Text>
+  //     </View>
+  //   );
+  // }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Username:</Text>
-      {/* <Text style={styles.text}>{user.username}</Text> */}
-      
-      <Text style={styles.label}>Email:</Text>
-      {/* <Text style={styles.text}>{user.email}</Text> */}
-      
-      <Text style={styles.label}>Address:</Text>
-      {/* <Text style={styles.text}>{user.address}</Text> */}
+    <View style={styles.container}> 
+    <View style={styles.head}>
+        <Text style={styles.heading}>Profile</Text>
+        <TouchableOpacity style={styles.sendButton} onPress   >
+          <Text style={styles.sendButtonText}>Edit</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.profileContainer}>
+        <Image
+          source={require('./profile.png')}  
+          style={styles.profileImage}
+        />
+        <Text style={styles.userName}>John Doe</Text>  
+      </View>  
+      <View style={styles.bottom}>
+        <Text style={styles.Item}>Email: userEmail</Text>
+        <Text style={styles.Item}>Address: userAddress</Text>
+        <Text style={styles.Item}>Rating: userRating</Text>
+      </View>
+        
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-  text: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  
+const styles = StyleSheet.create({ container: {
+  flex: 1,
+  alignItems: 'center',
+  backgroundColor: '#F5F5F5',
+},
+head: {
+  backgroundColor: 'white',
+  width: '100%',
+  height: 40,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  paddingHorizontal: 20,
+},
+heading: {
+  color: 'black',
+  fontWeight: 'bold',
+  fontSize: 18,
+  padding: 10,
+}, 
+profileContainer: {
+  alignItems: 'center',
+},
+profileImage: {
+  width: 150,
+  height: 150,
+  borderRadius: 75,
+  marginBottom: 20,
+}, 
+userName: {
+  fontSize: 24,
+  fontWeight: 'bold',
+},
+userInfo: {
+  fontSize: 16,
+  marginBottom: 10,
+},
+bottom:{
+  marginTop:150,
+},
+Item: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  borderBottomWidth: 1,
+  borderBottomColor: '#ccc',
+  paddingVertical: 12,
+  fontSize: 16,
+  fontWeight: 'bold',
+  width:300
+},
 });
 export default Profile;

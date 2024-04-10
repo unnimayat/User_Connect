@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, TextInput, ScrollView, Pressable } from 'react-native';
+import {Modal, View, Text, TouchableOpacity, StyleSheet, Dimensions, TextInput, ScrollView, Pressable } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
-import { useNavigation } from '@react-navigation/native';
-import Modal from "./Modal";
+import { useNavigation } from '@react-navigation/native'; 
 import socket from "../utils/socket";
 
 const { width } = Dimensions.get('window');
@@ -22,7 +21,11 @@ const Bidding = ({ route }) => {
   const [workername, setWorkerName] = useState('');
   const [messages, setMessages] = useState([]);
   const [label, setLabel] = useState("");
-  const [timer, setTimer] = useState(300);
+  const [accepted,setAccepted]=useState(false);
+  const [amount, setAmount] = useState(""); 
+  const [timer, setTimer] = useState(300); // 5 minutes in seconds
+   
+  const [sub, setSub] = useState(false);
   const generateID = () => Math.random().toString(36).substring(2, 10);
 
   const retrieveToken = async () => {
@@ -137,24 +140,88 @@ const Bidding = ({ route }) => {
     setLabel(`Amount: $${amount}`);
   };
 
+  const handleAccept=(amt,id)=>{
+    setAccepted(true);
+    setLabel(amt);
+    const currentTime = getCurrentTime();
+    const BidData = {
+      amount: parseInt(amt) ,
+      timestamp:currentTime,
+      chatId:id,
+      userId: uid,
+      workerId,
+    };
+    // Emit the bid message via socket
+    socket.emit('accept', { room_id: roomId, BidData } );
+
+    console.log(accepted);
+    setVisible(false);
+  }
+
+  const handleReject=()=>{
+
+  }
+  const handleConfirm=()=>{
+    navigation.navigate('details');
+  }
 
   setInterval(() => {
     setCurrentTime(getCurrentTime());
   }, 60000);
   const [visible, setVisible] = useState(false);
 
+  const handleCreateBid = () => {
+    console.log({ amount });
+    setLabel(`Amount: $${amount}`);
+    setSub(true);
+    const currentTime = getCurrentTime();
+    const newBidMessage = {
+      id: generateID(),
+      sender: { role: 'user' },
+      contentType: 'bid',
+      content: { bidAmount: parseInt(amount) },
+      timestamp: currentTime
+    };
+    // Emit the bid message via socket
+    socket.emit('message', { room_id: roomId, newMessage: newBidMessage },); 
+    // Add the bid message to the messages state
+    setMessages([...messages, newBidMessage]);
+    // Reset the input field and close the modal
+    setMessage('');
+    setVisible(false);
+  };
+  const onClose=()=>{}
+const closeModal = () => setVisible(false);
   return (
     <View style={styles.container}>
       <View style={styles.head}>
         <Text style={styles.heading}>Chat With {workername}</Text>
-        <TouchableOpacity style={styles.sendButton} onPress={() => setVisible(true)}>
+        <TouchableOpacity style={styles.sendButton} onPress={() => setVisible(true) } disabled={accepted} >
           <Text style={styles.sendButtonText}>Bid</Text>
         </TouchableOpacity>
       </View>
       <View>
+        
         {/* <View style={styles.profileIcon}>
           <Text>Profile Icon</Text>
         </View> */}
+
+        {
+          accepted &&     
+          <View style={styles.popuplabelContainer}>
+          <Text style={styles.whiteText}>Worker accepted the Request</Text>
+          <Text style={styles.labelText}> {label}</Text>      
+          <View style={styles.acceptRejectContainer}>
+              <Pressable style={styles.acceptButton} onPress={handleConfirm}>
+                <Text style={styles.modaltext1} >CONFIRM</Text>
+              </Pressable>
+              <Pressable style={styles.acceptButton} onPress={handleReject}>
+                <Text style={styles.modaltext1}>CLOSE</Text>
+              </Pressable>
+          </View>        
+        </View>
+        
+        }
 
         <ScrollView style={styles.chatContainer}>
           {messages?.map((msg) => (
@@ -174,15 +241,17 @@ const Bidding = ({ route }) => {
             </View>) :
               (<View key={msg.id}>
                 <View style={styles.labelContainer}>
-                  <Text style={styles.labelText}>{label}</Text>
+                  <Text style={styles.labelText}>{msg.content.bidAmount}</Text>
                   <Text style={styles.timerText}>
                     Timer: {Math.floor(timer / 60)}:{timer % 60 < 10 ? '0' : ''}{timer % 60}
                   </Text>
-                  <View style={styles.acceptRejectContainer}>
-                    <Pressable style={styles.acceptButton} onPress={closeBid}>
+                  <View style={styles.acceptRejectContainer}> 
+                  <Pressable style={styles.acceptButton} onPress={() => handleAccept(msg.content.bidAmount,msg._id)}>
+
                       <Text style={styles.modaltext}>ACCEPT</Text>
                     </Pressable>
-                    <Pressable style={styles.rejectButton} onPress={closeBid}>
+                    
+                    <Pressable style={styles.rejectButton} onPress={handleReject}>
                       <Text style={styles.modaltext}>REJECT</Text>
                     </Pressable>
                   </View>
@@ -192,7 +261,46 @@ const Bidding = ({ route }) => {
         </ScrollView>
         {/* Bidding Chat Messages */}
 
-        {visible ? <Modal setVisible={setVisible} roomId={roomId} /> : ""}
+        {visible ? 
+        // <Modal setVisible={setVisible} roomId={roomId} /> 
+        <View style={styles.modalContainer}>
+            <Text style={styles.modalsubheading}>Enter the Amount</Text>
+            <TextInput
+                style={styles.modalinput}
+                placeholder='Amount...'
+                onChangeText={(value) => setAmount(value)}
+            />
+
+            <View style={styles.modalbuttonContainer}>
+                <Pressable style={styles.modalbutton} onPress={handleCreateBid}>
+                    <Text style={styles.modaltext}>CREATE</Text>
+                </Pressable>
+                <Pressable
+                    style={[styles.modalbutton, { backgroundColor: "grey" }]}
+                    onPress={closeModal}
+                >
+                    <Text style={styles.modaltext}>CANCEL</Text>
+                </Pressable>
+            </View>
+            
+            {/* {label !== "" && (
+                <View style={styles.labelContainer}>
+                    <Text style={styles.labelText}>{label}</Text>
+                    <Text style={styles.timerText}>
+                        Timer: {Math.floor(timer / 60)}:{timer % 60 < 10 ? '0' : ''}{timer % 60}
+                    </Text>
+                    <View style={styles.acceptRejectContainer}>
+                        <Pressable style={styles.acceptButton} onPress={closeModal}>
+                            <Text style={styles.modaltext}>ACCEPT</Text>
+                        </Pressable>
+                        <Pressable style={styles.rejectButton} onPress={closeModal}>
+                            <Text style={styles.modaltext}>REJECT</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            )} */}
+        </View>
+        : ""}
 
         {/* Message Input and Send Button */}
         <View style={styles.inputContainer}>
@@ -211,7 +319,6 @@ const Bidding = ({ route }) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -219,7 +326,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   head: {
-
     backgroundColor: 'white',
     width: '100%',
     height: 40,
@@ -233,23 +339,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
     padding: 10,
-
   },
   profileIcon: {
-    alignItems: 'center',
-    marginBottom: 10,
+    marginRight: 10,
+    // Profile icon styles
   },
   chatContainer: {
     flex: 1,
+    marginBottom: 10,
+    color: 'blue', // Assuming this is for text color
   },
   messageContainer: {
     flexDirection: 'row',
     marginBottom: 10,
     alignItems: 'flex-start',
-  },
-  profileIcon: {
-    marginRight: 10,
-    // Profile icon styles
+    marginLeft: 20, // Add margin to messages to avoid overlap with label
   },
   messageContent: {
     flex: 1,
@@ -270,20 +374,13 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 10,
   },
-  chatContainer: {
-    flex: 1,
-    marginBottom: 10,
-    // Chat messages styles 
-    color: 'blue'
-  },
-  timeContainer: {
-  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
     bottom: '17%',
-    padding: '4%'
+    padding: '4%',
+    marginTop:50,
   },
   input: {
     flex: 1,
@@ -292,7 +389,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginRight: 10,
-
   },
   sendButton: {
     backgroundColor: 'black',
@@ -305,12 +401,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   labelContainer: {
-    marginTop: 20,
+    marginTop: 20, // Adjusted margin top to create space between label and messages
     alignItems: "center",
     borderRadius: 10,
     borderColor: 'black',
     borderWidth: 1,
     paddingVertical: 10,
+    margin:10,
   },
   labelText: {
     fontSize: 18,
@@ -338,9 +435,60 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   modaltext: {
-    color: "#FFF",
+    color: "#FFF",  
     fontSize: 16,
   },
+  modaltext1: {
+    color: "white",  
+    fontSize: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalsubheading: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  modalinput: {
+    height: 40,
+    width: 250,
+    borderColor: "gray",
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  modalbuttonContainer: {
+    flexDirection: "row",
+  },
+  modalbutton: {
+    backgroundColor: "black",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginHorizontal: 5,
+    borderRadius: 5,
+  },
+  modaltext: {
+    color: "#FFF",
+    fontSize: 16,
+  }, 
+  popuplabelContainer: {
+    backgroundColor: 'grey',
+    borderRadius: 15,
+    margin: 10,
+    height: '50%',
+    marginTop: '65%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  whiteText: { 
+    color: 'white',
+    fontSize:16,
+    // Additional styles if needed
+  }, 
+  
 });
+ 
 
 export default Bidding;

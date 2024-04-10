@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, TextInput, View, TouchableOpacity, Text ,FlatList} from 'react-native';
+import { StyleSheet, TextInput, View, TouchableOpacity, Text ,FlatList,ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 //import Ionicons from 'react-native-vector-icons/Ionicons'; 
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -67,139 +67,63 @@ export default function History() {
  
   return (
     <View style={styles.container}>
+    <View style={styles.mapContainer}>
+     
+  </View>
+    <View style={styles.workerListContainer}>
        <Text>list</Text>
-       <FlatList
+    <ScrollView>
+      <FlatList
         data={workers}
+         
         renderItem={({ item }) => (
-          // <View style={{ marginBottom: 10 }}>
-          //   <Text>{item.name}</Text> 
-          // </View>
-             <View style={{ marginBottom: 10,backgroundColor:'#fffff9',borderRadius:8 }}>
-             <Text style={{fontSize:14,color:'black',fontWeight:'bold'}}>{item.name}</Text> 
-           </View>
+          <TouchableOpacity style={styles.workerItem}>
+            <Text style={styles.workerName}>{item.name}</Text> 
+          </TouchableOpacity>
         )}
-        keyExtractor={(item) => item.id.toString()}
       />
-    </View>
+    </ScrollView>
+  </View>
+  </View>
   );
 }
 
 
 
 const styles = StyleSheet.create({
+  
+  
+  workerListContainer: {
+    flex: 1,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: '#fff',
+    padding: 16,
+    marginTop: -20,
+  },
+  workerItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    paddingVertical: 12,
+  },
+  workerName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  workerAmount: {
+    fontSize: 16,
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  topbutton: {
-    display: 'flex',
-    flexDirection: 'row',
-    left: 100,
-    bottom: 20,
+  mapContainer: { 
+    margin:10,
   },
-  topButton: {
-    width: 60,
-    height: 30,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  selectedButton: {
-    backgroundColor: '#A06D95',
-  },
-  nonselectedButton: {
-    borderWidth: 2,
-    borderColor: '#8B1874',
-  },
-  buttonText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#D9D9D9',
-    padding: 5,
-  },
-  selectedButtonText: {
-    color: '#fff',
-  },
-  nonselectedButtonText: {
-    color: '#8B1874',
-  },
-  label: {
-    borderWidth: 2,
-    borderColor: '#8B1874',
-    width: 329,
-    height: 580,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loginbtn: {
-    backgroundColor: '#A06D95',
-    borderRadius: 10,
-    padding: 5,
-    width: 140,
-    justifyContent: 'center',
-    alignItems: 'center',
-    top: 40,
-  },
-  loginText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: 'bold',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  inputname: {
-    borderWidth: 0.5,
-    borderColor: '#433C41',
-    width: 243,
-    height: 41,
-    borderRadius: 20,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-    lineHeight: 18,
-    color: '#8B1874',
-    padding: 10,
-    fontSize: 12,
-    marginTop: 10,
-  },
-
-  loginText1: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#8B1874',
-    marginBottom: 20,
-  },
-  navbar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#A06D95',
-    width: 329,
-    height: 42,
-    position: 'absolute',
-    bottom: 10,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    overflow: 'hidden',
-  },
-  navbarButton: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-  },
-  icon: { 
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  message: {
-    fontSize: 16,
-    textAlign: 'center',
+  map: {
+    ...StyleSheet.absoluteFillObject,
   },
 });

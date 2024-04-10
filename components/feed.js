@@ -48,7 +48,7 @@ const Feed = () => {
   };
   const handleProfilePress = () => {
     // Handle navigation to profile
-    navigation.navigate('profile');
+    navigation.navigate('feedback');
   };
   const handleCreatePress = () => {
     // Handle navigation to create
