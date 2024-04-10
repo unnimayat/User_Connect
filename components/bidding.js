@@ -21,7 +21,8 @@ const Bidding = ({ route }) => {
   const [workername, setWorkerName] = useState('');
   const [messages, setMessages] = useState([]);
   const [label, setLabel] = useState("");
-  const [accepted,setAccepted]=useState(false);
+  const [selfaccepted,setSelfAccepted]=useState(false);
+  const [workeraccepted,setWorkerAccepted]=useState(false);
   const [amount, setAmount] = useState(""); 
   const [timer, setTimer] = useState(300); // 5 minutes in seconds
    
@@ -73,6 +74,19 @@ const Bidding = ({ route }) => {
     // Cleanup function to unsubscribe from socket
     return () => {
       socket.off('newMessage');
+    };
+  }, []);
+
+  useEffect(() => {
+    socket.on('accepted', (BidData) => {
+      console.log('Bid accepted', BidData);
+      setWorkerAccepted(true);
+      setLabel(BidData.amount);
+    });
+
+    // Cleanup function to unsubscribe from socket
+    return () => {
+      socket.off('accepted');
     };
   }, []);
 
@@ -141,7 +155,7 @@ const Bidding = ({ route }) => {
   };
 
   const handleAccept=(amt,id)=>{
-    setAccepted(true);
+    setSelfAccepted(true);
     setLabel(amt);
     const currentTime = getCurrentTime();
     const BidData = {
@@ -154,7 +168,7 @@ const Bidding = ({ route }) => {
     // Emit the bid message via socket
     socket.emit('accept', { room_id: roomId, BidData } );
 
-    console.log(accepted);
+    console.log(selfaccepted);
     setVisible(false);
   }
 
@@ -196,7 +210,7 @@ const closeModal = () => setVisible(false);
     <View style={styles.container}>
       <View style={styles.head}>
         <Text style={styles.heading}>Chat With {workername}</Text>
-        <TouchableOpacity style={styles.sendButton} onPress={() => setVisible(true) } disabled={accepted} >
+        <TouchableOpacity style={styles.sendButton} onPress={() => setVisible(true) } disabled={selfaccepted || workeraccepted} >
           <Text style={styles.sendButtonText}>Bid</Text>
         </TouchableOpacity>
       </View>
@@ -207,9 +221,9 @@ const closeModal = () => setVisible(false);
         </View> */}
 
         {
-          accepted &&     
+          selfaccepted &&     
           <View style={styles.popuplabelContainer}>
-          <Text style={styles.whiteText}>Worker accepted the Request</Text>
+          <Text style={styles.whiteText}>You have accepted the Request</Text>
           <Text style={styles.labelText}> {label}</Text>      
           <View style={styles.acceptRejectContainer}>
               <Pressable style={styles.acceptButton} onPress={handleConfirm}>
@@ -221,6 +235,22 @@ const closeModal = () => setVisible(false);
           </View>        
         </View>
         
+        }
+        {
+          workeraccepted &&
+          <View style={styles.popuplabelContainer}>
+            <Text style={styles.whiteText}>Worker has accepted the Request</Text>
+            <Text style={styles.labelText}> {label}</Text>
+            <View style={styles.acceptRejectContainer}>
+              <Pressable style={styles.acceptButton} onPress={handleConfirm}>
+                <Text style={styles.modaltext1} >CONFIRM</Text>
+              </Pressable>
+              <Pressable style={styles.acceptButton} onPress={handleReject}>
+                <Text style={styles.modaltext1}>CLOSE</Text>
+              </Pressable>
+            </View>
+          </View>
+
         }
 
         <ScrollView style={styles.chatContainer}>
