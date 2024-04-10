@@ -39,12 +39,16 @@ const CategoryCard = ({ category, onPress }) => {
 const Feed = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState('')
+  const [location, setLocation] = useState('');
+  const [address, setAddress] = useState('');
+  
+  const [uid, setUId] = useState('');
   const handleCategoryPress = (category) => {
     navigation.navigate('category', { category });
   };
   const handleProfilePress = () => {
     // Handle navigation to profile
-    navigation.navigate('profile');
+    navigation.navigate('feedback');
   };
   const handleCreatePress = () => {
     // Handle navigation to create
@@ -89,7 +93,8 @@ const Feed = () => {
         const decodedToken = jwt_decode(token);
         const { username, password } = decodedToken;
         console.log(username)
-        setUsername(username);
+        setUsername(username);        
+        setUId(decodedToken.userId)
         return { username, password };
       } else {
         console.log('Token not found');
@@ -111,12 +116,37 @@ const Feed = () => {
   const handleLocation = () => {
     navigation.navigate('map')
   }
+  handleProfile=()=>{
+
+  }
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        if (uid) {
+          const location = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/user/location/${uid}`)
+          console.log(location.data);
+          setLocation(location.data.location)
+          setAddress(location.data.address)
+          console.log('hello ',address ,'hhi');
+        }
+      }
+      catch (error) {
+        console.log("Error fetching location", error)
+      }
+    };
+    fetchLocation();
+  }, [uid])
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Ionicons name="location" size={24} color="white" style={{ marginLeft: 10 }} onPress={handleLocation} />
-        <Text style={styles.categoryText2}>location</Text>
-        <Text style={styles.categoryText3}>{username}</Text>
+        <View>
+          <Text style={styles.categoryText2}>location</Text>
+          <Text style={styles.categoryTextsmall}>{address}</Text>
+        </View>
+        <TouchableOpacity style={styles.button} onPress={handleProfilePress}>
+          <Text style={styles.buttonText}>{username}</Text>
+        </TouchableOpacity> 
       </View>
       {/* <hr style={{ color: "white", width: "100%", height: 0.5 }} /> */}
       <ScrollView contentContainerStyle={styles.categoryContainer}>
@@ -165,7 +195,8 @@ const styles = StyleSheet.create({
   },
   categoryContainer: {
     padding: 10,
-    backgroundColor: "black"
+    backgroundColor: "black",
+    margin:10,
   },
   categoryLabel: {
     width: 150,
@@ -207,11 +238,18 @@ const styles = StyleSheet.create({
     color: "white",
     marginLeft: 10,
   },
+  categoryTextsmall: {
+    fontSize: 12,
+    fontWeight: 'normal',
+    color: "white", 
+    marginLeft: -1,
+    marginTop:15,
+  },
   categoryText3: {
     fontSize: 16,
     fontWeight: 'normal',
-    color: "white",
-    marginLeft: 180,
+    color: "white", 
+    marginLeft: 0,
   },
 
   categoryLabel: {
@@ -223,6 +261,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  button: { 
+    borderRadius: 50, // half of width and height to make it a circle
+    backgroundColor: 'white', // change the color as needed
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding:2,
+    width:30,
+    height:30,
+    left:-10,
+  },
+  buttonText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

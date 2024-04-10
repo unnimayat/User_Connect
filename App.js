@@ -10,6 +10,8 @@ import feed from "./components/feed"
 import profile from './components/profile';  
 import ListingPage from "./components/list"
 import map from "./components/map"
+import feedback from "./components/feedback"
+import details from "./components/details"
 const Stack = createNativeStackNavigator(); 
 import Bidding from "./components/bidding"
 
@@ -18,11 +20,7 @@ const MyStack = () => {
     
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="home"
-          component={home}
-          options={{title: ' '}}
-        />
+        <Stack.Screen name="home" component={home} options={{title: ' '}}/>
         <Stack.Screen name="login" component={login} options={{title:''}}/>
         <Stack.Screen name="history" component={history} options={{title:''}}/>   
         <Stack.Screen name='feed' component={feed} options={{title:''}}/>
@@ -32,6 +30,8 @@ const MyStack = () => {
         <Stack.Screen name="signin" component={signin} options={{title:''}}/>
         <Stack.Screen name="map" component={map} options={{ title: '' }} />
         <Stack.Screen name="bidding" component={Bidding} options={{ title: '' }} />
+        <Stack.Screen name="details" component={details} options={{ title: '' }} />
+        <Stack.Screen name="feedback" component={feedback} options={{ title: '' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

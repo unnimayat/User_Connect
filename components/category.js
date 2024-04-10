@@ -162,22 +162,26 @@ const CategoryPage = ({ route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Ionicons name="location" size={24} color="#000" />
+        <Ionicons name="location" size={28} color="#000" />
+        <Text>Workers near your location {address}</Text>
         <Text style={styles.categoryText}>{category}</Text>
       </View>
-
+{/* 
       <View>
-        <Ionicons name="search" size={20} color="#777" style={styles.searchIcon} onPress={() => handleSearch(category)} />
-        <Text>Workers near your location {address}</Text>
+        <Ionicons name="search" size={20} color="#777" style={styles.searchIcon} onPress={() => handleSearch(category)} />  
         <Text>Click for gigs</Text>
-        {/* <TextInput
-          style={styles.searchInput}
-          placeholder="Search for people"
-          placeholderTextColor="#777"
-          value={location}
-          onChangeText={(location) => setLocation(location)}
-        /> */}
-      </View>
+      </View> */}
+      <View style={styles.searchContainer}>
+  <Text style={styles.searchLabel}>
+    <Ionicons name="search" size={20} color="#777" style={styles.searchIcon} onPress={() => handleSearch(category)} />  
+  </Text>
+  <TextInput
+    style={styles.searchInput}
+    placeholder="Search for gigs"
+    placeholderTextColor="#777"
+    onChangeText={text => handleSearch(text)}
+  />
+</View>
 
       <FlatList
         data={matchingWorkers}
@@ -256,6 +260,25 @@ const styles = StyleSheet.create({
   bookButtonText: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#777',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+  searchLabel: {
+    marginRight: 10,
+  },
+  searchIcon: {
+    marginRight: 5,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    color: '#333',
   },
 });
 
