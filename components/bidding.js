@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useRef} from 'react';
 import {Modal, View, Text, TouchableOpacity, StyleSheet, Dimensions, TextInput, ScrollView, Pressable } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
@@ -10,6 +10,7 @@ import socket from "../utils/socket";
 const { width } = Dimensions.get('window');
 
 const Bidding = ({ route }) => {
+  const scrollViewRef = useRef();
   const { workerId } = route.params;
   const navigation = useNavigation();
   const [userId, setUserId] = useState('');
@@ -53,6 +54,16 @@ const Bidding = ({ route }) => {
     }
   };
 
+  useEffect(() => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });  
+    }
+  }, [messages]); 
+  useEffect(() => { 
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       const { username, password } = await retrieveToken();
@@ -252,43 +263,53 @@ const closeModal = () => setVisible(false);
           </View>
 
         }
+ <ScrollView style={styles.chatContainer} ref={scrollViewRef}>
+  {messages?.map((msg) => (
+    <View key={msg.id} style={styles.messageContainer}>
+      <View style={styles.profileIcon}>
+        {/* Profile Icon */}
+        {/* You can place your profile icon component here */}
+        {/* <Text>Profile Icon</Text> */}
+      </View>
+      {msg.contentType === "text" ? (
+        <View style={styles.messageContent}>
+          {/* Time */}
+          <Text style={styles.timeText}>{msg.timestamp}</Text>
+          {/* Message Text */}
+          <Text style={msg.sender.role === "user" ? styles.messageUserText : styles.messageWorkerText}>
+            {msg.content.text}
+          </Text>
+        </View>
+      ) : (
+        <View  style={[
+          styles.labelContainer,
+          msg.sender.role === "user" ? styles.labelUserContainer : styles.labelWorkerContainer
+        ]}>
+          <Text style={styles.labelText}>{msg.content.bidAmount}</Text>
+          <Text style={styles.timerText}>
+            Timer: {Math.floor(timer / 60)}:{timer % 60 < 10 ? '0' : ''}{timer % 60}
+          </Text>
+          {msg.sender.role !== "user" ? (
+  <View style={styles.acceptRejectContainer}> 
+    <Pressable style={styles.acceptButton} onPress={() => handleAccept(msg.content.bidAmount, msg._id)}>
+      <Text style={styles.modaltext}>ACCEPT</Text>
+    </Pressable>
+    <Pressable style={styles.rejectButton} onPress={handleReject}>
+      <Text style={styles.modaltext}>REJECT</Text>
+    </Pressable>
+  </View>):
+  (<View style={styles.acceptRejectContainer}> 
+    <Pressable style={styles.acceptButton}  >
+      <Text style={styles.modaltext}>WAITING</Text>
+    </Pressable> 
+  </View>)
+}
+        </View>
+      )}
+    </View>
+  ))}
+</ScrollView>
 
-        <ScrollView style={styles.chatContainer}>
-          {messages?.map((msg) => (
-            msg.contentType === "text" ? (<View key={msg.id} style={styles.messageContainer}>
-              <View style={styles.profileIcon}>
-                {/* Profile Icon */}
-                {/* You can place your profile icon component here */}
-                {/* <Text>Profile Icon</Text> */}
-              </View>
-              <View style={styles.messageContent}>
-                {/* Time */}
-                <Text style={styles.timeText}>{msg.timestamp}</Text>
-                {/* Message Text */}
-                <Text style={styles.messageText}>{msg.content.text}</Text>
-
-              </View>
-            </View>) :
-              (<View key={msg.id}>
-                <View style={styles.labelContainer}>
-                  <Text style={styles.labelText}>{msg.content.bidAmount}</Text>
-                  <Text style={styles.timerText}>
-                    Timer: {Math.floor(timer / 60)}:{timer % 60 < 10 ? '0' : ''}{timer % 60}
-                  </Text>
-                  <View style={styles.acceptRejectContainer}> 
-                  <Pressable style={styles.acceptButton} onPress={() => handleAccept(msg.content.bidAmount,msg._id)}>
-
-                      <Text style={styles.modaltext}>ACCEPT</Text>
-                    </Pressable>
-                    
-                    <Pressable style={styles.rejectButton} onPress={handleReject}>
-                      <Text style={styles.modaltext}>REJECT</Text>
-                    </Pressable>
-                  </View>
-                </View>
-              </View>)
-          ))}
-        </ScrollView>
         {/* Bidding Chat Messages */}
 
         {visible ? 
@@ -392,11 +413,19 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     margin: 5,
   },
-  messageText: {
+  messageUserText: {  
+    
+    backgroundColor: '#C0C0C0', 
+    padding: 10,
+    borderRadius: 10,
+  },
+  messageWorkerText: { 
+    
     backgroundColor: '#f0f0f0',
     padding: 10,
     borderRadius: 10,
   },
+
   timeText: {
     marginTop: 0,
     fontSize: 12,
@@ -517,6 +546,18 @@ const styles = StyleSheet.create({
     fontSize:16,
     // Additional styles if needed
   }, 
+  labelWorkerContainer: {  
+    
+    backgroundColor: '#f0f0f0', 
+    alignSelf: 'flex-start',  
+     
+    padding:20,
+  },
+  labelUserContainer: { 
+    backgroundColor: '#C0C0C0',  
+    alignSelf: 'flex-end',   
+    padding:20,
+  },
   
 });
  
