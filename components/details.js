@@ -14,7 +14,7 @@ export default function Details({ route }) {
   const [period, setPeriod] = useState('');
   const navigation = useNavigation();
 
-  const { bidId ,workerId} = route.params;
+  const { bidId, workerId } = route.params;
 
   const handleButtonPress = async () => {
     try {
@@ -28,8 +28,8 @@ export default function Details({ route }) {
       });
 
       console.log('Response:', response);
-       
-      //navigation.navigate('active');
+      if (response.status === 200)
+        navigation.navigate('active');
     } catch (error) {
       console.log('Error:', error);
       Alert.alert(
@@ -38,7 +38,7 @@ export default function Details({ route }) {
         [
           {
             text: 'OK',
-            onPress: () =>  navigation.navigate('bidding', { workerId })
+            onPress: () => navigation.navigate('bidding', { workerId })
           }
         ],
         { cancelable: false }
@@ -131,8 +131,8 @@ const styles = StyleSheet.create({
     borderColor: 'grey', // White border color
     borderRadius: 10,
     width: 300,
-    backgroundColor:"white",
-    height:"50%"
+    backgroundColor: "white",
+    height: "50%"
   },
   label: {
     fontSize: 20,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 7,
     alignItems: 'center',
-    marginTop:20
+    marginTop: 20
   },
   buttonText: {
     color: 'white', // Black text color

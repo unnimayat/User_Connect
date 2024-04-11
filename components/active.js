@@ -49,13 +49,11 @@ export default function Active() {
       console.log('id',uid);
       try {
         if(uid){
-          const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/appointment/history/${uid}`);
+          const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/appointment/user-history/${uid}`);
 
         console.log('successfully listed active workers', response.data);
-        setWorkers(response.data.workers)
+        setWorkers(response.data)
         }
-        //socket.emit("createRoom", response.data.chatId);
-        // You may want to update the state or perform additional actions based on the response
       } catch (error) {
         console.error('Error adding request for:', error);
       }
@@ -72,7 +70,7 @@ export default function Active() {
     <View style={styles.workerListContainer}> 
     <Text style={styles.heading}>Active Appointments</Text>
 
-    <ScrollView>
+    {/* <ScrollView>
       <FlatList
         data={workers}
          
@@ -82,7 +80,8 @@ export default function Active() {
           </TouchableOpacity>
         )}
       />
-    </ScrollView>
+    </ScrollView>  */}
+
   </View>
   </View>
   );

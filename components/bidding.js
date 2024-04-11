@@ -28,6 +28,8 @@ const Bidding = ({ route }) => {
   const [timer, setTimer] = useState(300); // 5 minutes in seconds
   const [bidId, setBidId] = useState(null);
   const [sub, setSub] = useState(false);
+  const [status, setStatus] = useState(-1);
+
   const generateID = () => Math.random().toString(36).substring(2, 10);
 
   const retrieveToken = async () => {
@@ -138,7 +140,10 @@ const Bidding = ({ route }) => {
           console.log(response.data)
           setLabel(response.data.amount)
           setBidId(response.data._id)
-          if (response.data) {
+          setStatus(response.data.approval)
+          console.log("approval value",response.data.approval)
+
+          if (response.data && response.data.approval===0) {
             if (response.data.sender.role === "user") {
               setSelfAccepted(true)
             }
@@ -215,16 +220,15 @@ const Bidding = ({ route }) => {
     setVisible(false);
   }
 
-  const handleReject = () => {  
+  const handleReject = () => {
     navigation.navigate('bidding', { workerId });
     setSelfAccepted(false);
-  } 
+  }
   const handleConfirm = () => {
-    console.log("bidId",bidId)
-    if(bidId!==null)
-    {
-   // navigation.navigate('details',{bidId,workerId});
-   navigation.navigate('active')
+    console.log("bidId", bidId)
+    if (bidId !== null) {
+      navigation.navigate('details', { bidId, workerId });
+      //  navigation.navigate('active')
     }
   }
 
@@ -257,12 +261,28 @@ const Bidding = ({ route }) => {
   const closeModal = () => setVisible(false);
   return (
     <View style={styles.container}>
-      <View style={styles.head}>
-        <Text style={styles.heading}>Chat With {workername}</Text>
-        <TouchableOpacity style={styles.sendButton} onPress={() => setVisible(true)} disabled={selfaccepted || workeraccepted} >
-          <Text style={styles.sendButtonText}>Bid</Text>
-        </TouchableOpacity>
-      </View>
+
+      <Text style={styles.heading}>Chat With {workername}</Text>
+
+      {
+      // then there is no active or in-progress bookings
+      (status === -1 ) &&
+        <View style={styles.head}>
+          <TouchableOpacity style={styles.sendButton} onPress={() => setVisible(true)} disabled={selfaccepted || workeraccepted} >
+            <Text style={styles.sendButtonText}>Bid</Text>
+          </TouchableOpacity>
+        </View>
+        }
+
+      { //Active bookings (Confirmed)
+        status === 1 &&
+        <View style={styles.head}>
+          <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('active')} >
+            <Text style={styles.sendButtonText}>Active booking details</Text>
+          </TouchableOpacity>
+        </View>
+      }
+
       <View>
 
         {/* <View style={styles.profileIcon}>
@@ -311,7 +331,7 @@ const Bidding = ({ route }) => {
                 {/* <Text>Profile Icon</Text> */}
               </View>
               {msg.contentType === "text" ? (
-                <View  style={[styles.messageContent, msg.sender.role === 'user' ? styles.UserContainer : styles.WorkerContainer]}>
+                <View style={[styles.messageContent, msg.sender.role === 'user' ? styles.UserContainer : styles.WorkerContainer]}>
                   {/* Time */}
                   <Text style={styles.timeText}>{msg.timestamp}</Text>
                   {/* Message Text */}
@@ -320,9 +340,9 @@ const Bidding = ({ route }) => {
                   </Text>
                 </View>
               ) : (
-                <View  style={[
+                <View style={[
                   styles.labelContainer,
-                  { backgroundColor: msg.sender.role === 'user' ?  '#f0f0f0' :'#C0C0C0' }
+                  { backgroundColor: msg.sender.role === 'user' ? '#f0f0f0' : '#C0C0C0' }
                 ]}>
                   <Text style={styles.labelText}>{msg.content.bidAmount}</Text>
                   <Text style={styles.timerText}>
@@ -429,9 +449,9 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginLeft: 20, // Add margin to messages to avoid overlap with label
   },
-  messageContent: { 
-    flexDirection: 'column', 
-    alignItems: 'flex-start', 
+  messageContent: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     marginRight: 20,
   },
   messageUserText: {
@@ -488,14 +508,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingVertical: 10,
     margin: 10,
-    
+
   },
   labelText: {
     fontSize: 24,
     marginBottom: 10,
     fontWeight: 'bold',
     color: 'black', // Adjust color as needed
-    padding:20
+    padding: 20
   },
   timerText: {
     fontSize: 16,
@@ -569,14 +589,14 @@ const styles = StyleSheet.create({
   whiteText: {
     color: '#d6c25a',
     fontSize: 16,
-    padding:10
+    padding: 10
     // Additional styles if needed
   },
   WorkerContainer: {
-    alignSelf: 'flex-end', 
+    alignSelf: 'flex-end',
   },
   UserContainer: {
-    alignSelf: 'flex-start', 
+    alignSelf: 'flex-start',
   },
 });
 
