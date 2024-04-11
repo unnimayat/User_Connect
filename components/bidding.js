@@ -27,7 +27,6 @@ const Bidding = ({ route }) => {
   const [amount, setAmount] = useState("");
   const [timer, setTimer] = useState(300); // 5 minutes in seconds
   const [bidId, setBidId] = useState(null);
-
   const [sub, setSub] = useState(false);
   const generateID = () => Math.random().toString(36).substring(2, 10);
 
@@ -216,14 +215,16 @@ const Bidding = ({ route }) => {
     setVisible(false);
   }
 
-  const handleReject = () => {
-
-  }
+  const handleReject = () => {  
+    navigation.navigate('bidding', { workerId });
+    setSelfAccepted(false);
+  } 
   const handleConfirm = () => {
     console.log("bidId",bidId)
     if(bidId!==null)
     {
-    navigation.navigate('details',{bidId});
+   // navigation.navigate('details',{bidId,workerId});
+   navigation.navigate('active')
     }
   }
 
@@ -271,8 +272,9 @@ const Bidding = ({ route }) => {
         {
           selfaccepted &&
           <View style={styles.popuplabelContainer}>
-            <Text style={styles.whiteText}>You have accepted the Request , Click to Confirm</Text>
-            <Text style={styles.labelText}> {label}</Text>
+            <Text style={styles.whiteText}>You have accepted the Request</Text>
+            <Text style={styles.whiteText}>click to Confirm</Text>
+            <Text style={styles.labelText}> Rs.{label}</Text>
             <View style={styles.acceptRejectContainer}>
               <Pressable style={styles.acceptButton} onPress={handleConfirm}>
                 <Text style={styles.modaltext1} >CONFIRM</Text>
@@ -302,14 +304,14 @@ const Bidding = ({ route }) => {
         }
         <ScrollView style={styles.chatContainer} ref={scrollViewRef}>
           {messages?.map((msg) => (
-            <View key={msg.id} style={styles.messageContainer}>
+            <View key={msg.id} style={[styles.messageContainer, msg.sender.role === 'user' ? styles.UserContainer : styles.WorkerContainer]}>
               <View style={styles.profileIcon}>
                 {/* Profile Icon */}
                 {/* You can place your profile icon component here */}
                 {/* <Text>Profile Icon</Text> */}
               </View>
               {msg.contentType === "text" ? (
-                <View style={styles.messageContent}>
+                <View  style={[styles.messageContent, msg.sender.role === 'user' ? styles.UserContainer : styles.WorkerContainer]}>
                   {/* Time */}
                   <Text style={styles.timeText}>{msg.timestamp}</Text>
                   {/* Message Text */}
@@ -318,9 +320,9 @@ const Bidding = ({ route }) => {
                   </Text>
                 </View>
               ) : (
-                <View style={[
+                <View  style={[
                   styles.labelContainer,
-                  msg.sender.role === "user" ? styles.labelUserContainer : styles.labelWorkerContainer
+                  { backgroundColor: msg.sender.role === 'user' ?  '#f0f0f0' :'#C0C0C0' }
                 ]}>
                   <Text style={styles.labelText}>{msg.content.bidAmount}</Text>
                   <Text style={styles.timerText}>
@@ -370,23 +372,6 @@ const Bidding = ({ route }) => {
                 <Text style={styles.modaltext}>CANCEL</Text>
               </Pressable>
             </View>
-
-            {/* {label !== "" && (
-                <View style={styles.labelContainer}>
-                    <Text style={styles.labelText}>{label}</Text>
-                    <Text style={styles.timerText}>
-                        Timer: {Math.floor(timer / 60)}:{timer % 60 < 10 ? '0' : ''}{timer % 60}
-                    </Text>
-                    <View style={styles.acceptRejectContainer}>
-                        <Pressable style={styles.acceptButton} onPress={closeModal}>
-                            <Text style={styles.modaltext}>ACCEPT</Text>
-                        </Pressable>
-                        <Pressable style={styles.rejectButton} onPress={closeModal}>
-                            <Text style={styles.modaltext}>REJECT</Text>
-                        </Pressable>
-                    </View>
-                </View>
-            )} */}
           </View>
           : ""}
 
@@ -407,6 +392,7 @@ const Bidding = ({ route }) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -443,22 +429,20 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginLeft: 20, // Add margin to messages to avoid overlap with label
   },
-  messageContent: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    margin: 5,
+  messageContent: { 
+    flexDirection: 'column', 
+    alignItems: 'flex-start', 
+    marginRight: 20,
   },
   messageUserText: {
 
-    backgroundColor: '#C0C0C0',
+    backgroundColor: '#f0f0f0',
     padding: 10,
     borderRadius: 10,
   },
   messageWorkerText: {
 
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#C0C0C0',
     padding: 10,
     borderRadius: 10,
   },
@@ -504,10 +488,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingVertical: 10,
     margin: 10,
+    
   },
   labelText: {
-    fontSize: 18,
+    fontSize: 24,
     marginBottom: 10,
+    fontWeight: 'bold',
+    color: 'black', // Adjust color as needed
+    padding:20
   },
   timerText: {
     fontSize: 16,
@@ -579,24 +567,17 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   whiteText: {
-    color: 'white',
+    color: '#d6c25a',
     fontSize: 16,
+    padding:10
     // Additional styles if needed
   },
-  labelWorkerContainer: {
-
-    backgroundColor: '#f0f0f0',
-    alignSelf: 'flex-start',
-
-    padding: 20,
+  WorkerContainer: {
+    alignSelf: 'flex-end', 
   },
-  labelUserContainer: {
-    backgroundColor: '#C0C0C0',
-    alignSelf: 'flex-end',
-    padding: 20,
+  UserContainer: {
+    alignSelf: 'flex-start', 
   },
-
 });
-
 
 export default Bidding;

@@ -14,6 +14,7 @@ import feedback from "./components/feedback"
 import details from "./components/details"
 const Stack = createNativeStackNavigator(); 
 import Bidding from "./components/bidding"
+import Active from './components/active';
 
 const MyStack = () => {
   return (
@@ -32,6 +33,7 @@ const MyStack = () => {
         <Stack.Screen name="bidding" component={Bidding} options={{ title: '' }} />
         <Stack.Screen name="details" component={details} options={{ title: '' }} />
         <Stack.Screen name="feedback" component={feedback} options={{ title: '' }} />
+        <Stack.Screen name="active" component={Active} options={{ title: '' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
