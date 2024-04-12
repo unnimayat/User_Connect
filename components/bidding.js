@@ -118,6 +118,7 @@ const Bidding = ({ route }) => {
           console.log('Chat opened successfully');
           setRoomId(response.data.chatId);
           setWorkerName(response.data.workerName)
+          console.log('name',response.data.workerName);
           setMessages(response.data.messages)
           // socket.emit("createRoom", response.data.chatId);
         }
@@ -262,12 +263,13 @@ const Bidding = ({ route }) => {
   return (
     <View style={styles.container}>
 
-      <Text style={styles.heading}>Chat With {workername}</Text>
+      
 
       {
       // then there is no active or in-progress bookings
       (status === -1 ) &&
         <View style={styles.head}>
+          <Text style={styles.heading}>Chat With {workername}</Text>
           <TouchableOpacity style={styles.sendButton} onPress={() => setVisible(true)} disabled={selfaccepted || workeraccepted} >
             <Text style={styles.sendButtonText}>Bid</Text>
           </TouchableOpacity>
@@ -478,9 +480,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    bottom: '17%',
+    bottom: '18%',
     padding: '4%',
-    marginTop: 50,
+    marginTop: 60,
   },
   input: {
     flex: 1,
