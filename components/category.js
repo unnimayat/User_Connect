@@ -163,8 +163,12 @@ const CategoryPage = ({ route }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Ionicons name="location" size={28} color="#000" />
-        <Text>Workers near your location {address}</Text>
-        <Text style={styles.categoryText}>{category}</Text>
+        <View style={styles.column}>
+        <Text>Workers near your location</Text>
+        <Text>{address}</Text>
+        </View>
+        
+        {/* <Text style={styles.categoryText}>{category}</Text> */}
       </View>
 {/* 
       <View>
@@ -177,7 +181,7 @@ const CategoryPage = ({ route }) => {
   </Text>
   <TextInput
     style={styles.searchInput}
-    placeholder="Search for gigs"
+    placeholder="Click on Search Icon"
     placeholderTextColor="#777"
     onChangeText={text => handleSearch(text)}
   />
@@ -196,12 +200,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 16,
+    padding: 16, 
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
+  },
+  column: {
+    flexDirection: 'column',
+    alignItems: 'left', 
+    padding:10
   },
   categoryText: {
     fontSize: 20,

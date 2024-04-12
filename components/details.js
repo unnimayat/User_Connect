@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, View, TouchableOpacity, Text } from 'react-native';
-// import { Picker } from '@react-native-picker/picker';
-import axios from 'axios';
+import { MaterialIcons } from '@expo/vector-icons'; // Import MaterialIcons for icons
+import moment from 'moment'; // Import moment for date-time handling
 import { useNavigation } from '@react-navigation/native';
-import moment from 'moment';
 
+import axios from 'axios';
 export default function Details({ route }) {
   const [day, setDay] = useState('');
   const [month, setMonth] = useState('');
@@ -12,9 +12,9 @@ export default function Details({ route }) {
   const [hours, setHours] = useState('');
   const [minutes, setMinutes] = useState('');
   const [period, setPeriod] = useState('');
-
   const navigation = useNavigation();
-  const { bidId } = route.params;
+
+  const { bidId ,workerId} = route.params;
 
   const handleButtonPress = async () => {
     try {
@@ -28,8 +28,22 @@ export default function Details({ route }) {
       });
 
       console.log('Response:', response);
+       
+      //navigation.navigate('active');
     } catch (error) {
       console.log('Error:', error);
+      Alert.alert(
+        'Booking failed',
+        'An error occurred while processing your booking. Please try again.',
+        [
+          {
+            text: 'OK',
+            onPress: () =>  navigation.navigate('bidding', { workerId })
+          }
+        ],
+        { cancelable: false }
+      );
+
     }
   };
 
@@ -40,9 +54,10 @@ export default function Details({ route }) {
 
         {/* Date input: Day, Month, Year */}
         <View style={styles.inputRow}>
+          <MaterialIcons name="date-range" size={24} color="#000" />
           <TextInput
             style={styles.input}
-            placeholder="DD"
+            placeholder="dd"
             value={day}
             onChangeText={setDay}
             keyboardType="numeric"
@@ -50,7 +65,7 @@ export default function Details({ route }) {
           />
           <TextInput
             style={styles.input}
-            placeholder="MM"
+            placeholder="mm"
             value={month}
             onChangeText={setMonth}
             keyboardType="numeric"
@@ -58,7 +73,7 @@ export default function Details({ route }) {
           />
           <TextInput
             style={styles.input}
-            placeholder="YYYY"
+            placeholder="yyyy"
             value={year}
             onChangeText={setYear}
             keyboardType="numeric"
@@ -68,9 +83,10 @@ export default function Details({ route }) {
 
         {/* Time input: Hours, Minutes, and AM/PM Picker */}
         <View style={styles.inputRow}>
+          <MaterialIcons name="access-time" size={24} color="#000" />
           <TextInput
             style={styles.input}
-            placeholder="HH"
+            placeholder="hours"
             value={hours}
             onChangeText={setHours}
             keyboardType="numeric"
@@ -78,7 +94,7 @@ export default function Details({ route }) {
           />
           <TextInput
             style={styles.input}
-            placeholder="MM"
+            placeholder="min"
             value={minutes}
             onChangeText={setMinutes}
             keyboardType="numeric"
@@ -91,14 +107,6 @@ export default function Details({ route }) {
             onChangeText={setPeriod}
             maxLength={2}
           />
-          {/* <Picker
-            selectedValue={period}
-            onValueChange={(value) => setPeriod(value)}
-            style={styles.picker}
-          >
-            <Picker.Item label="AM" value="AM" />
-            <Picker.Item label="PM" value="PM" />
-          </Picker> */}
         </View>
 
         {/* Submit button */}
@@ -113,16 +121,18 @@ export default function Details({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000', // Black background color
+    backgroundColor: 'grey', // Black background color
     alignItems: 'center',
     justifyContent: 'center',
   },
   form: {
     padding: 20,
     borderWidth: 2,
-    borderColor: '#fff', // White border color
+    borderColor: 'grey', // White border color
     borderRadius: 10,
     width: 300,
+    backgroundColor:"white",
+    height:"50%"
   },
   label: {
     fontSize: 20,
@@ -133,10 +143,11 @@ const styles = StyleSheet.create({
   inputRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center', // Align icons and input fields vertically
     marginBottom: 20,
   },
   input: {
-    width: 80,
+    flex: 1, // Take remaining space in the row
     height: 40,
     borderRadius: 5,
     padding: 10,
@@ -145,24 +156,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderColor: '#ccc',
     borderWidth: 1,
-  },
-  picker: {
-    width: 80,
-    height: 40,
-    borderRadius: 5,
-    backgroundColor: '#fff',
-    color: '#000',
-    borderColor: '#ccc',
-    borderWidth: 1,
+    marginLeft: 10, // Add margin between icon and input field
   },
   button: {
-    backgroundColor: '#fff', // White background color
+    backgroundColor: 'grey', // White background color
     borderRadius: 10,
-    padding: 10,
+    padding: 7,
     alignItems: 'center',
+    marginTop:20
   },
   buttonText: {
-    color: '#000', // Black text color
+    color: 'white', // Black text color
     fontSize: 16,
     fontWeight: 'bold',
   },
