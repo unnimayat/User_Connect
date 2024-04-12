@@ -223,7 +223,8 @@ const Bidding = ({ route }) => {
     console.log("bidId",bidId)
     if(bidId!==null)
     {
-    navigation.navigate('details',{bidId,workerId});
+   // navigation.navigate('details',{bidId,workerId});
+   navigation.navigate('active')
     }
   }
 
@@ -493,7 +494,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginBottom: 10,
     fontWeight: 'bold',
-    color: 'white', // Adjust color as needed
+    color: 'black', // Adjust color as needed
     padding:20
   },
   timerText: {

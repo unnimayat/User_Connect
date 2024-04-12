@@ -45,14 +45,13 @@ export default function Active() {
   }, [])
 
   useEffect(() => { 
-    const fetchWorkers = async () => {
+    const fetchActiveWorkers = async () => {
       console.log('id',uid);
       try {
         if(uid){
-          const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user/chat/workers`, {
-            userId: uid,
-          });
-        console.log('successful', response.data.workers);
+          const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/appointment/history/${uid}`);
+
+        console.log('successfully listed active workers', response.data);
         setWorkers(response.data.workers)
         }
         //socket.emit("createRoom", response.data.chatId);
@@ -62,7 +61,7 @@ export default function Active() {
       }
     };
 
-    fetchWorkers();
+    fetchActiveWorkers();
   }, [uid]); 
  
   return (
