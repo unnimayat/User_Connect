@@ -5,13 +5,19 @@ import * as Location from 'expo-location';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
+import { useGlobalContext } from '../GlobalContext';
 
-export default function App() {
+
+export default function App({route}) {
     const [location, setLocation] = useState(null);
     const [markerPosition, setMarkerPosition] = useState(null);
     const [searchText, setSearchText] = useState('');
     const [errorMsg, setErrorMsg] = useState(null);
     const [uid, setUId] = useState('');
+    // const [address,setAddress]=useState(route.params.address);
+    const { globalState, updateGlobalState } = useGlobalContext();
+    // Access the global state
+    const { address } = globalState;
     const mapRef = useRef(null);
 
     const retrieveToken = async () => {
@@ -60,6 +66,12 @@ export default function App() {
                 let currentLocation = await Location.getCurrentPositionAsync({});
                 console.log(currentLocation);
                 setLocation(currentLocation);
+                mapRef.current.animateToRegion({
+                    latitude: currentLocation.coords.latitude, 
+                    longitude: currentLocation.coords.longitude,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                });
                 setMarkerPosition({
                     latitude: currentLocation.coords.latitude,
                     longitude: currentLocation.coords.longitude,
@@ -84,11 +96,12 @@ export default function App() {
     }
 
     const handleMarkerPress = (e) => {
-        console.log(e.nativeEvent.coordinate);
+        console.log("pressed",e.nativeEvent.coordinate);
         setMarkerPosition(e.nativeEvent.coordinate);
+        handleLocationUpdate();
     };
 
-    useEffect(() => {
+    // useEffect(() => {
         const handleLocationUpdate = async () => {
             try {
                 const { username, password } = await retrieveToken();
@@ -96,6 +109,8 @@ export default function App() {
 
                 if (markerPosition) {
                     const loc_address = await fetchAddress(markerPosition)
+                    // setAddress(loc_address)
+                    updateGlobalState({address:loc_address})
                     const requestBody = {
                         userId: uid,
                         location: {
@@ -121,8 +136,8 @@ export default function App() {
             }
         };
 
-        handleLocationUpdate();
-    }, [markerPosition]);
+    //     handleLocationUpdate();
+    // }, [markerPosition]);
 
     const handleSearch = async () => {
         try {
@@ -156,6 +171,7 @@ export default function App() {
             <MapView
                 ref={mapRef}
                 style={styles.map}
+                
                 initialRegion={{
                     latitude: location?.coords.latitude || 0,
                     longitude: location?.coords.longitude || 0,
@@ -167,7 +183,7 @@ export default function App() {
                 {markerPosition && (
                     <Marker
                         coordinate={markerPosition}
-                        title="Your Location"
+                        title="Set Location"
                         onPress={handleMarkerPress}
                         draggable
                     />
@@ -182,7 +198,7 @@ export default function App() {
                 />
                 <Button title="Search" onPress={handleSearch} />
             </View>
-            <Text style={styles.paragraph}>{"You are at "+JSON.stringify(markerPosition)}</Text>
+            <Text style={styles.paragraph}>{"Last saved location is " + address}</Text>
         </View>
     );
 }

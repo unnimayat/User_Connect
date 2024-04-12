@@ -15,10 +15,11 @@ import details from "./components/details"
 const Stack = createNativeStackNavigator(); 
 import Bidding from "./components/bidding"
 import Active from './components/active';
+import { GlobalProvider } from './GlobalContext';
 
 const MyStack = () => {
   return (
-    
+    <GlobalProvider>
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="home" component={home} options={{title: ' '}}/>
@@ -36,6 +37,7 @@ const MyStack = () => {
         <Stack.Screen name="active" component={Active} options={{ title: '' }} />
       </Stack.Navigator>
     </NavigationContainer>
+    </GlobalProvider>   
   );
 };
 export default MyStack
