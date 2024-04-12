@@ -115,7 +115,7 @@ const Bidding = ({ route }) => {
             userId: uid,
             workerId,
           });
-          console.log('Chat opened successfully');
+          console.log('Chat opened successfully',response.data);
           setRoomId(response.data.chatId);
           setWorkerName(response.data.workerName)
           console.log('name',response.data.workerName);
@@ -261,15 +261,12 @@ const Bidding = ({ route }) => {
   const onClose = () => { }
   const closeModal = () => setVisible(false);
   return (
-    <View style={styles.container}>
-
-      
-
+    <View style={styles.container}>  
+      <Text style={styles.heading}>Chat With {workername}</Text>
       {
       // then there is no active or in-progress bookings
       (status === -1 ) &&
         <View style={styles.head}>
-          <Text style={styles.heading}>Chat With {workername}</Text>
           <TouchableOpacity style={styles.sendButton} onPress={() => setVisible(true)} disabled={selfaccepted || workeraccepted} >
             <Text style={styles.sendButtonText}>Bid</Text>
           </TouchableOpacity>
