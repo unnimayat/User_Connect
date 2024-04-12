@@ -53,7 +53,7 @@ const Feed = () => {
   const handleCreatePress = () => {
     // Handle navigation to create
     //navigation.navigate('feed');
-    navigation.navigate('history'); 
+    navigation.navigate('active'); 
   };
   const categories = [
     'plumber',
