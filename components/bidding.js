@@ -262,11 +262,12 @@ const Bidding = ({ route }) => {
   const closeModal = () => setVisible(false);
   return (
     <View style={styles.container}>  
-      <Text style={styles.heading}>Chat With {workername}</Text>
+      
       {
       // then there is no active or in-progress bookings
       (status === -1 ) &&
         <View style={styles.head}>
+          <Text style={styles.heading}>Chat With {workername}</Text>
           <TouchableOpacity style={styles.sendButton} onPress={() => setVisible(true)} disabled={selfaccepted || workeraccepted} >
             <Text style={styles.sendButtonText}>Bid</Text>
           </TouchableOpacity>
@@ -276,6 +277,7 @@ const Bidding = ({ route }) => {
       { //Active bookings (Confirmed)
         status === 1 &&
         <View style={styles.head}>
+          <Text style={styles.heading}>Chat With {workername}</Text>
           <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('active')} >
             <Text style={styles.sendButtonText}>Active booking details</Text>
           </TouchableOpacity>
