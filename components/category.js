@@ -147,8 +147,8 @@ const CategoryPage = ({ route }) => {
     <View style={styles.workerItem}>
       <View style={styles.workerAvatar} />
       <View style={styles.workerInfo}>
-        <Text style={styles.workerName}>ID: {item.empid}</Text>
-        <Text style={styles.workerDetails}>Name: {item.username}</Text>
+        <Text style={styles.workerName}>{item.username}</Text>
+        <Text style={styles.workerDetails}>{parseFloat((item.distance).toPrecision(2))}KM</Text>
       </View>
       <TouchableOpacity
         style={styles.bookButton}
