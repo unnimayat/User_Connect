@@ -1,4 +1,4 @@
- 
+
 import React from 'react';
 import { useEffect } from 'react';
 import { StyleSheet, View, ScrollView, TouchableOpacity, Text } from 'react-native';
@@ -9,6 +9,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
 import { useState } from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { useGlobalContext } from '../GlobalContext';
+
 //const navigation = useNavigation();
 const handleHomePress = () => {
   // Handle navigation to home
@@ -40,20 +42,24 @@ const Feed = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState('')
   const [location, setLocation] = useState('');
-  const [address, setAddress] = useState('');
   
+  // const [address, setAddress] = useState('');
+  const { globalState, updateGlobalState } = useGlobalContext();
+  // Access the global state
+  const { address } = globalState;
+
   const [uid, setUId] = useState('');
   const handleCategoryPress = (category) => {
     navigation.navigate('category', { category });
   };
   const handleProfilePress = () => {
     // Handle navigation to profile
-    navigation.navigate('feedback');
+    navigation.navigate('profile');
   };
   const handleCreatePress = () => {
     // Handle navigation to create
     //navigation.navigate('feed');
-    navigation.navigate('history'); 
+    navigation.navigate('active'); 
   };
   const categories = [
     'plumber',
@@ -93,7 +99,7 @@ const Feed = () => {
         const decodedToken = jwt_decode(token);
         const { username, password } = decodedToken;
         console.log(username)
-        setUsername(username);        
+        setUsername(username);
         setUId(decodedToken.userId)
         return { username, password };
       } else {
@@ -114,9 +120,9 @@ const Feed = () => {
   }, [])
 
   const handleLocation = () => {
-    navigation.navigate('map')
+    navigation.navigate('map', { address })
   }
-  handleProfile=()=>{
+  handleProfile = () => {
 
   }
   useEffect(() => {
@@ -126,8 +132,9 @@ const Feed = () => {
           const location = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/user/location/${uid}`)
           console.log(location.data);
           setLocation(location.data.location)
-          setAddress(location.data.address)
-          console.log('hello ',address ,'hhi');
+          // setAddress(location.data.address)
+          updateGlobalState({address:location.data.address})
+          console.log('hello ', address, 'hhi');
         }
       }
       catch (error) {
@@ -136,6 +143,7 @@ const Feed = () => {
     };
     fetchLocation();
   }, [uid])
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -146,7 +154,7 @@ const Feed = () => {
         </View>
         <TouchableOpacity style={styles.button} onPress={handleProfilePress}>
           <Text style={styles.buttonText}>{username}</Text>
-        </TouchableOpacity> 
+        </TouchableOpacity>
       </View>
       {/* <hr style={{ color: "white", width: "100%", height: 0.5 }} /> */}
       <ScrollView contentContainerStyle={styles.categoryContainer}>
@@ -196,7 +204,7 @@ const styles = StyleSheet.create({
   categoryContainer: {
     padding: 10,
     backgroundColor: "black",
-    margin:10,
+    margin: 10,
   },
   categoryLabel: {
     width: 150,
@@ -241,14 +249,14 @@ const styles = StyleSheet.create({
   categoryTextsmall: {
     fontSize: 12,
     fontWeight: 'normal',
-    color: "white", 
+    color: "white",
     marginLeft: -1,
-    marginTop:15,
+    marginTop: 15,
   },
   categoryText3: {
     fontSize: 16,
     fontWeight: 'normal',
-    color: "white", 
+    color: "white",
     marginLeft: 0,
   },
 
@@ -262,15 +270,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  button: { 
+  button: {
     borderRadius: 50, // half of width and height to make it a circle
     backgroundColor: 'white', // change the color as needed
     justifyContent: 'center',
     alignItems: 'center',
-    padding:2,
-    width:30,
-    height:30,
-    left:-10,
+    padding: 2,
+    width: 30,
+    height: 30,
+    left: -60,
   },
   buttonText: {
     color: 'black',

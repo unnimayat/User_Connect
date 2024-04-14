@@ -1,83 +1,128 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, View, TouchableOpacity, Text } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; 
+import { MaterialIcons } from '@expo/vector-icons'; // Import MaterialIcons for icons
+import moment from 'moment'; // Import moment for date-time handling
+import { useNavigation } from '@react-navigation/native';
+
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import jwt_decode from "jwt-decode";
-export default function Details() {
-  const [time, setTime] = useState('');
-  const [date, setDate] = useState('');
+export default function Details({ route }) {
+  const [day, setDay] = useState('');
+  const [month, setMonth] = useState('');
+  const [year, setYear] = useState('');
+  const [hours, setHours] = useState('');
+  const [minutes, setMinutes] = useState('');
+  const [period, setPeriod] = useState('');
   const navigation = useNavigation();
 
-  const storeToken = async (token) => {
+  const { bidId, workerId } = route.params;
+
+  const handleButtonPress = async () => {
+    if (!day || !month || !year || !hours || !minutes || !period) {
+      // Display alert if any of the fields are empty
+      Alert.alert(
+        'Incomplete Details',
+        'Please enter all fields before submitting.',
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+        { cancelable: false }
+      );
+      return; // Exit the function early if any field is empty
+    }
+    
     try {
-      await AsyncStorage.setItem('token', token);
-      console.log('Token stored successfully');
-      console.log(token)
- 
+      // Combine date and time inputs
+      const dateTimeString = `${year}-${month}-${day}T${hours}:${minutes} ${period}`;
+      const dateTimeObject = moment(dateTimeString, 'YYYY-MM-DDTHH:mm A').toDate();
+
+      // Send the date and time as a single Date object
+      const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/appointment/accept-request/${bidId}`, {
+        date: dateTimeObject
+      });
+
+      console.log('Response:', response);
+      if (response.status === 200)
+        navigation.navigate('active');
     } catch (error) {
-      console.error('Failed to store token', error);
+      console.log('Error:', error);
+      Alert.alert(
+        'Booking failed',
+        'An error occurred while processing your booking. Please try again.',
+        [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('bidding', { workerId })
+          }
+        ],
+        { cancelable: false }
+      );
+
     }
   };
-
-  const retrieveToken = async () => {
-    try {
-      const token = await AsyncStorage.getItem('token'); 
-      if (token) {
-        console.log('Token retrieved successfully');
-        return token;
-      } else {
-        console.log('Token not found');
-        return null;
-      }
-    } catch (error) {
-      console.error('Failed to retrieve token', error);
-      return null;
-    }
-  };
-
-  const removeToken = async () => {
-    try {
-      await AsyncStorage.removeItem('token');
-      console.log('Token removed successfully');
-    } catch (error) {
-      console.error('Failed to remove token', error);
-    }
-  };
-  const handleButtonPress = () => {
-    console.log(process.env.EXPO_PUBLIC_API_URL)
-    console.log('details page');
-  };
-
-  const handleTimeChange = (value) => {
-    setTime(value);
-  };
-
-  const handleDateChange = (value) => {
-    setDate(value);
-  }; 
 
   return (
     <View style={styles.container}>
-      <View style={styles.label}>
-        <Text style={styles.loginText1}>Enter Details</Text>
-        <TextInput
-          style={styles.inputname}
-          placeholder="Enter Time"
-          placeholderTextColor="#fff"
-          value={time}
-          onChangeText={handleTimeChange}
-        />
-        <TextInput
-          style={styles.inputname}
-          placeholder="Enter date"
-          placeholderTextColor="#fff"
-          value={date}
-          secureTextEntry={true}
-          onChangeText={handleDateChange}
-        /> 
-        <TouchableOpacity style={styles.loginbtn} onPress={handleButtonPress}>
-          <Text style={styles.loginText}>SUBMIT</Text>
+      <View style={styles.form}>
+        <Text style={styles.label}>Enter Details</Text>
+
+        {/* Date input: Day, Month, Year */}
+        <View style={styles.inputRow}>
+          <MaterialIcons name="date-range" size={24} color="#000" />
+          <TextInput
+            style={styles.input}
+            placeholder="dd"
+            value={day}
+            onChangeText={setDay}
+            keyboardType="numeric"
+            maxLength={2}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="mm"
+            value={month}
+            onChangeText={setMonth}
+            keyboardType="numeric"
+            maxLength={2}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="yyyy"
+            value={year}
+            onChangeText={setYear}
+            keyboardType="numeric"
+            maxLength={4}
+          />
+        </View>
+
+        {/* Time input: Hours, Minutes, and AM/PM Picker */}
+        <View style={styles.inputRow}>
+          <MaterialIcons name="access-time" size={24} color="#000" />
+          <TextInput
+            style={styles.input}
+            placeholder="hours"
+            value={hours}
+            onChangeText={setHours}
+            keyboardType="numeric"
+            maxLength={2}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="min"
+            value={minutes}
+            onChangeText={setMinutes}
+            keyboardType="numeric"
+            maxLength={2}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="AM/PM"
+            value={period}
+            onChangeText={setPeriod}
+            maxLength={2}
+          />
+        </View>
+
+        {/* Submit button */}
+        <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
+          <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -87,68 +132,53 @@ export default function Details() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000', // Black background color
+    backgroundColor: 'grey', // Black background color
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  form: {
+    padding: 20,
+    borderWidth: 2,
+    borderColor: 'grey', // White border color
+    borderRadius: 10,
+    width: 300,
+    backgroundColor: "white",
+    height: "50%"
   },
   label: {
-    borderWidth: 2,
-    borderColor: '#fff', // White border color
-    width: 270,
-    height: 500,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  newlogin: {
-    width: 243,
-    height: 41,
-    borderRadius: 20,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-    lineHeight: 18, 
-    color: 'white', // White text color
-    padding: 10,
-    fontSize: 12,  // Slightly lighter color for borders
-    marginTop: 10,
-    marginLeft:340,
-  },
-  inputname: {
-    width: 243,
-    height: 41,
-    borderRadius: 20,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-    lineHeight: 18,
-    color: '#fff', // White text color
-    padding: 10,
-    fontSize: 12,
-    borderWidth: 0.5,
-    borderColor: '#ddd', // Slightly lighter color for borders
-    marginTop: 10,
-  },
-  loginbtn: {
-    backgroundColor: '#fff', // White background color
-    borderRadius: 10,
-    padding: 5,
-    width: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-    top: 40,
-  },
-  loginText: {
-    color: '#000', // Black text color
-    fontSize: 18,
-    fontWeight: 'bold',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loginText1: {
-    top: -100,
     fontSize: 20,
     fontWeight: 'bold',
     color: '#fff', // White text color
+    marginBottom: 20,
+  },
+  inputRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center', // Align icons and input fields vertically
+    marginBottom: 20,
+  },
+  input: {
+    flex: 1, // Take remaining space in the row
+    height: 40,
+    borderRadius: 5,
+    padding: 10,
+    backgroundColor: '#fff',
+    color: '#000',
+    fontSize: 16,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginLeft: 10, // Add margin between icon and input field
+  },
+  button: {
+    backgroundColor: 'grey', // White background color
+    borderRadius: 10,
+    padding: 7,
+    alignItems: 'center',
+    marginTop: 20
+  },
+  buttonText: {
+    color: 'white', // Black text color
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
