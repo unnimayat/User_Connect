@@ -214,6 +214,7 @@ const Bidding = ({ route }) => {
       workerId,
       sender: { role: 'user' },
     };
+    console.log(BidData)
     // Emit the bid message via socket
     socket.emit('accept', { room_id: roomId, BidData });
 
