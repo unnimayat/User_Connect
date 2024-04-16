@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: 'bold',
     fontSize: 18,
-    padding: 10,
+    padding: 5,
   },
   profileIcon: {
     marginRight: 10,
