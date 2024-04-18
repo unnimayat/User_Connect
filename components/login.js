@@ -85,14 +85,14 @@ export default function Login() {
         <TextInput
           style={styles.inputname}
           placeholder="Enter Name"
-          placeholderTextColor="#fff"
+          placeholderTextColor="#781C68"
           value={username}
           onChangeText={handleNameChange}
         />
         <TextInput
           style={styles.inputname}
           placeholder="Enter Id"
-          placeholderTextColor="#fff"
+          placeholderTextColor="#781C68"
           value={password}
           secureTextEntry={true}
           onChangeText={handlePasswordChange}
@@ -109,13 +109,13 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000', // Black background color
+    backgroundColor: '#fff', // Black background color
     alignItems: 'center',
     justifyContent: 'center',
   },
   label: {
     borderWidth: 2,
-    borderColor: '#fff', // White border color
+    borderColor: '#781C68', // White border color
     width: 270,
     height: 500,
     borderRadius: 10,
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 20,
     lineHeight: 18, 
-    color: 'white', // White text color
+    color: '#781C68', // White text color
     padding: 10,
     fontSize: 12,  // Slightly lighter color for borders
     marginTop: 10,
@@ -144,15 +144,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 20,
     lineHeight: 18,
-    color: '#fff', // White text color
+    color: '#781C68', // White text color
     padding: 10,
     fontSize: 12,
     borderWidth: 0.5,
-    borderColor: '#ddd', // Slightly lighter color for borders
+    borderColor: '#781C68', // Slightly lighter color for borders
     marginTop: 10,
   },
   loginbtn: {
-    backgroundColor: '#fff', // White background color
+    backgroundColor: '#781C68', // White background color
     borderRadius: 10,
     padding: 5,
     width: 100,
@@ -161,16 +161,16 @@ const styles = StyleSheet.create({
     top: 40,
   },
   loginText: {
-    color: '#000', // Black text color
+    color: '#fff', // Black text color
     fontSize: 18,
     fontWeight: 'bold',
     justifyContent: 'center',
     alignItems: 'center',
   },
   loginText1: {
-    top: -100,
+    top: -160,
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff', // White text color
+    color: '#781C68', // White text color
   },
 });

@@ -209,7 +209,7 @@ const Bidding = ({ route }) => {
     const BidData = {
       amount: parseInt(amt),
       timestamp: currentTime,
-      chatId: id,
+      //chatId: id,
       userId: uid,
       workerId,
       sender: { role: 'user' },
@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'white',
   },
   head: {
     backgroundColor: 'white',
@@ -430,8 +430,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
   },
-  heading: {
-    color: 'black',
+  heading: { 
+    
+    color:'#781C68',
     fontWeight: 'bold',
     fontSize: 18,
     padding: 5,
@@ -442,8 +443,9 @@ const styles = StyleSheet.create({
   },
   chatContainer: {
     flex: 1,
-    marginBottom: 10,
-    color: 'blue', // Assuming this is for text color
+    marginBottom: 10, 
+    
+    color:'#781C68',
   },
   messageContainer: {
     flexDirection: 'row',
@@ -458,15 +460,19 @@ const styles = StyleSheet.create({
   },
   messageUserText: {
 
-    backgroundColor: '#f0f0f0',
+    backgroundColor:  '#BE8EB2'    ,
     padding: 10,
     borderRadius: 10,
+    color:'white',
   },
   messageWorkerText: {
 
-    backgroundColor: '#C0C0C0',
+    backgroundColor: '#E6D1E0'    ,
     padding: 10,
     borderRadius: 10,
+    color:' #781C68',
+   
+
   },
 
   timeText: {
@@ -487,13 +493,13 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ccc',
+    color: ' #781C68',
     borderRadius: 5,
     paddingHorizontal: 10,
     marginRight: 10,
   },
   sendButton: {
-    backgroundColor: 'black',
+    backgroundColor: '#781C68',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 5,
@@ -506,7 +512,7 @@ const styles = StyleSheet.create({
     marginTop: 20, // Adjusted margin top to create space between label and messages
     alignItems: "center",
     borderRadius: 10,
-    borderColor: 'black',
+    borderColor: '#781C68',
     borderWidth: 1,
     paddingVertical: 10,
     margin: 10,
@@ -516,7 +522,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginBottom: 10,
     fontWeight: 'bold',
-    color: 'black', // Adjust color as needed
+    color: '#781C68', // Adjust color as needed
     padding: 20
   },
   timerText: {
@@ -527,7 +533,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   acceptButton: {
-    backgroundColor: "black",
+    backgroundColor: "#781C68",
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginHorizontal: 5,
@@ -560,7 +566,7 @@ const styles = StyleSheet.create({
   modalinput: {
     height: 40,
     width: 250,
-    borderColor: "gray",
+    borderColor: "grey",
     borderWidth: 1,
     paddingHorizontal: 10,
     marginBottom: 20,
@@ -569,7 +575,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   modalbutton: {
-    backgroundColor: "black",
+    backgroundColor: "#781C68",
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginHorizontal: 5,

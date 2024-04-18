@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useEffect } from 'react';
-import { StyleSheet, View, ScrollView, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, View, ScrollView, TouchableOpacity, Text ,Image} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
@@ -29,12 +29,7 @@ const CategoryCard = ({ category, onPress }) => {
     carpentry: 'hammer',
   };
 
-  return (
-    <TouchableOpacity style={styles.categoryLabel} onPress={onPress}>
-      <FontAwesome5 name={icons[category]} size={40} color="#000000" style={styles.categoryIcon} />
-      <Text style={styles.categoryText}>{category}</Text>
-    </TouchableOpacity>
-  );
+   
 };
 
 
@@ -147,7 +142,7 @@ const Feed = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Ionicons name="location" size={24} color="white" style={{ marginLeft: 10 }} onPress={handleLocation} />
+        <Ionicons name="location" size={24} color="#781C68" style={{ marginLeft: 10 }} onPress={handleLocation} />
         <View>
           <Text style={styles.categoryText2}>location</Text>
           <Text style={styles.categoryTextsmall}>{address}</Text>
@@ -157,31 +152,70 @@ const Feed = () => {
         </TouchableOpacity>
       </View>
       {/* <hr style={{ color: "white", width: "100%", height: 0.5 }} /> */}
-      <ScrollView contentContainerStyle={styles.categoryContainer}>
-        <View style={styles.columnContainer}>
-          <View style={styles.column}>
-            {categories.slice(0, Math.ceil(categories.length / 2)).map((category, index) => (
-              <CategoryCard key={index} category={category} onPress={() => handleCategoryPress(category)} />
-            ))}
-          </View>
-          <View style={styles.column}>
-            {categories.slice(Math.ceil(categories.length / 2)).map((category, index) => (
-              <CategoryCard key={index} category={category} onPress={() => handleCategoryPress(category)} />
-            ))}
-          </View>
-        </View>
+      
+      <ScrollView >
+      <View style={styles.columnContainer}>
+  <View style={styles.rowContainer}>
+    <View style={styles.column}>
+      <TouchableOpacity style={styles.categoryLabel} onPress={() => handleCategoryPress("plumber")} >
+        <Image source={require('../assets/plumber.jpg')} style={styles.categoryImage} resizeMode="cover" />
+        <Text style={styles.categoryText}>Plumber</Text>
+      </TouchableOpacity>
+    </View>
+    <View style={styles.column}>
+      <TouchableOpacity style={styles.categoryLabel} onPress={() => handleCategoryPress("electrician")} >
+      <Image source={require('../assets/electrician.jpg')} style={styles.categoryImage} resizeMode="cover" />
+        <Text style={styles.categoryText}>Electrician</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+  <View style={styles.rowContainer}>
+    <View style={styles.column}>
+      <TouchableOpacity style={styles.categoryLabel} onPress={() => handleCategoryPress("baby care")} >
+      <Image source={require('../assets/babycare.jpg')} style={styles.categoryImage} resizeMode="cover" />
+        <Text style={styles.categoryText}>Baby Care</Text>
+      </TouchableOpacity>
+    </View>
+    <View style={styles.column}>
+      <TouchableOpacity style={styles.categoryLabel} onPress={() => handleCategoryPress("cleaning")} >
+      <Image source={require('../assets/cleaning.jpeg')} style={styles.categoryImage} resizeMode="cover" />
+        <Text style={styles.categoryText}>Cleaning</Text>
+      </TouchableOpacity>
+    </View>
+  </View> 
+  <View style={styles.rowContainer}>
+    <View style={styles.column}> 
+      <TouchableOpacity style={styles.categoryLabel} onPress={() => handleCategoryPress("home nurse")} >
+      <Image source={require('../assets/homenurse.jpg')} style={styles.categoryImage} resizeMode="cover" />
+        <Text style={styles.categoryText}>Home Nurse</Text>
+      </TouchableOpacity> 
+    </View>
+    <View style={styles.column}>
+            
+                <TouchableOpacity style={styles.categoryLabel} onPress={() => handleCategoryPress("house keeping")} >
+                <Image source={require('../assets/housekeeping.jpg')} style={styles.categoryImage} resizeMode="cover" />
+                {/* <FontAwesome5 name={icons[category]} size={40} color="#000000" style={styles.categoryIcon} /> */}
+                <Text style={styles.categoryText}>House Keeping</Text>
+              </TouchableOpacity> 
+    </View>
+  </View>
+     
+     
+  
+</View>
+
       </ScrollView>
 
       {/* Navbar */}
       <View style={styles.navbar}>
         <TouchableOpacity style={styles.navbarButton} onPress={handleHomePress}>
-          <Ionicons name="home-outline" size={24} color="#FFFFFF" />
+          <Ionicons name="home-outline" size={24} color="#781C68" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.navbarButton} onPress={handleCreatePress}>
-          <Ionicons name="create-outline" size={24} color="#FFFFFF" />
+          <Ionicons name="create-outline" size={24} color="#781C68" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.navbarButton} onPress={handleProfilePress}>
-          <Ionicons name="person-outline" size={20} color="#FFFFFF" />
+          <Ionicons name="person-outline" size={20} color="#781C68" />
         </TouchableOpacity>
       </View>
     </View>
@@ -191,20 +225,23 @@ const Feed = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: 'white',
     justifyContent: 'center',
   },
+   
   columnContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rowContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   column: {
     flex: 1,
-  },
-  categoryContainer: {
-    padding: 10,
-    backgroundColor: "black",
-    margin: 10,
+    margin: 5,
   },
   categoryLabel: {
     width: 150,
@@ -212,17 +249,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 15,
     padding: 10,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#781C68',
   },
   categoryText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#781C68',
   },
   navbar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    backgroundColor: '#000000',
+    backgroundColor: 'white',
     width: '100%',
     height: 42,
     position: 'absolute',
@@ -238,25 +275,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 0,
     marginTop: 10,
-    backgroundColor: "black"
+    backgroundColor: "white"
   },
   categoryText2: {
     fontSize: 16,
     fontWeight: 'normal',
-    color: "white",
+    color: "#781C68",
     marginLeft: 10,
   },
   categoryTextsmall: {
     fontSize: 12,
     fontWeight: 'normal',
-    color: "white",
+    color: "#781C68",
     marginLeft: -1,
     marginTop: 15,
   },
   categoryText3: {
     fontSize: 16,
     fontWeight: 'normal',
-    color: "white",
+    color: "#781C68",
     marginLeft: 0,
   },
 
@@ -272,7 +309,7 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 50, // half of width and height to make it a circle
-    backgroundColor: 'white', // change the color as needed
+    backgroundColor: '#781C68', // change the color as needed
     justifyContent: 'center',
     alignItems: 'center',
     padding: 2,
@@ -281,9 +318,16 @@ const styles = StyleSheet.create({
     left: -60,
   },
   buttonText: {
-    color: 'black',
+    color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  categoryImage: {
+
+    flex: 1, 
+    width: 150,
+    height: 250,
+    borderRadius: 5, // Optional: to match the borderRadius of the categoryLabel
   },
 });
 

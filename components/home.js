@@ -11,7 +11,8 @@ export default function Home({ navigation }) {
     <View style={styles.container}>
       <View style={styles.container1}>
         <View style={styles.imageContainer}>
-          {/* <Image source={require('../assets/1.png')} style={styles.image} /> */}
+          <Image source={require('../assets/shg.png')} style={styles.image} />
+          
         </View>
       </View>
 
@@ -20,7 +21,7 @@ export default function Home({ navigation }) {
           <CustomButton
             title="Get Started"
             onPress={pressHandler}
-            textColor="black"
+            textColor="#781C68"
           />
         </View>
       </View>
@@ -41,14 +42,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container2: {
-    backgroundColor: '#000', // Black background color
+    backgroundColor: '#781C68', // Black background color
     width: '100%',
     height: '50%',
     justifyContent: 'center',
     alignItems: 'center',
   },
   container1: {
-    backgroundColor: '#000', // Black background color
+    backgroundColor: '#781C68', // Black background color
     width: '100%',
     height: '50%',
   },

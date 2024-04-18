@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
 import socket from "../utils/socket";
 import * as Location from 'expo-location';
+import { color } from 'react-native-elements/dist/helpers';
 
 const CategoryPage = ({ route }) => {
   const { category } = route.params;
@@ -162,7 +163,7 @@ const CategoryPage = ({ route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Ionicons name="location" size={28} color="#000" />
+        <Ionicons name="location" size={28} color="#781C68" />
         <View style={styles.column}>
         <Text>Workers near your location</Text>
         <Text>{address}</Text>
@@ -206,16 +207,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
+    color:'#781C68'
   },
   column: {
     flexDirection: 'column',
     alignItems: 'left', 
-    padding:10
+    padding:10,
+    color:'#BE8EB2'
   },
   categoryText: {
     fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 8,
+    color:'#781C68'
   },
   searchContainer: {
     flexDirection: 'row',
@@ -231,14 +235,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#781C68',
   },
   workerAvatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
     marginRight: 16,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#781C68',
   },
   workerInfo: {
     flex: 1,
@@ -246,6 +250,7 @@ const styles = StyleSheet.create({
   workerName: {
     fontSize: 16,
     fontWeight: 'bold',
+    color:'#781C68'
   },
   workerDetails: {
     fontSize: 14,
@@ -260,7 +265,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   bookButton: {
-    backgroundColor: 'black',
+    backgroundColor: '#BE8EB2',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,

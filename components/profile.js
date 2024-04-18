@@ -132,7 +132,7 @@ head: {
   paddingHorizontal: 20,
 },
 heading: {
-  color: 'black',
+  color: '#781C68',
   fontWeight: 'bold',
   fontSize: 18,
   padding: 10,
@@ -145,10 +145,12 @@ profileImage: {
   height: 150,
   borderRadius: 75,
   marginBottom: 20,
+  color:'#781C68', 
 }, 
 userName: {
   fontSize: 24,
   fontWeight: 'bold',
+  color:'#781C68', 
 },
 userInfo: {
   fontSize: 16,
@@ -162,7 +164,7 @@ Item: {
   justifyContent: 'space-between',
   alignItems: 'center',
   borderBottomWidth: 1,
-  borderBottomColor: '#ccc',
+  borderBottomColor: '#781C68',
   paddingVertical: 12,
   fontSize: 16,
   fontWeight: 'bold',
@@ -190,7 +192,7 @@ light: {
   fontSize: 16,
   fontWeight: '400',
   marginBottom: 10,
-  color: 'black',
+  color: '#781C68',
 },
 button: {
   backgroundColor: '#333',
@@ -199,9 +201,10 @@ button: {
   marginTop: 0,
   marginBottom: 0,
   alignItems: 'center',
+  backgroundColor:'#781C68'
 },
 buttonText: {
-  color: '#fff',
+  color: 'white',
   fontSize: 16,
   fontWeight: 'bold',
 },

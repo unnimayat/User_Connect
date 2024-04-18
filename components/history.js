@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 16,
     marginTop: -20,
+    color:'#781C68'
   },
   workerItem: {
     flexDirection: 'row',
@@ -92,14 +93,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     paddingVertical: 12,
+    
+    color:'#781C68'
   },
   workerName: {
     fontSize: 16,
     fontWeight: 'bold',
+    
+    color:'#781C68',
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
   },
   heading: {
     fontSize: 24,
@@ -107,5 +112,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     padding:10,
+    
+    color:'#781C68'
   },
 });

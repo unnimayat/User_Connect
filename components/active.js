@@ -67,7 +67,7 @@ export default function Active() {
                 <TouchableOpacity style={styles.workerItem}  onPress={() => navigation.navigate('activedetails', { worker: item.worker,amt:item.amount })}>
                   <View style={styles.workerInfoContainer}>
                     <View style={styles.workerNameContainer}>
-                      <Icon name="account-circle" size={24} color="#333" style={{ marginRight: 8 }} />
+                      <Icon name="account-circle" size={24} color="#781C68" style={{ marginRight: 8 }} />
                       <Text style={styles.workerName}>{item.worker.username}</Text>
                       <Text style={styles.workeramount}>Rs.{item.amount}</Text>
                     </View>
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     padding:10,
+    color:'#781C68'
   },
   workerListContainer: {
     flex: 1,
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 0,
-    color: 'grey', // Darker text color
+    color: '#781C68', // Darker text color
     padding:5
   },
   workeramount: {

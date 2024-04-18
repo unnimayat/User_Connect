@@ -32,7 +32,7 @@ const Feedback = () => {
             <Ionicons
               name={rating >= index ? 'star' : 'star-outline'}
               size={40}
-              color={rating >= index ? 'black' : '#CCCCCC'}
+              color={rating >= index ? '#781C68' : '#CCCCCC'}
             />
           </TouchableOpacity>
         ))}
@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color:'#781C68'
   },
   ratingContainer: {
     flexDirection: 'row',
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   submitButton: {
-    backgroundColor: 'black',
+    backgroundColor: '#781C68',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,

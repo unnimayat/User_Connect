@@ -72,7 +72,7 @@ export default function Activedetails({route}) {
 
         <View style={styles.workerInfoContainer}>
           <View style={styles.workerNameContainer}>
-            <Icon name="account-circle" size={24} color="#333" style={{ marginRight: 8 }} />
+            <Icon name="account-circle" size={24} color="#781C68" style={{ marginRight: 8 }} />
             <Text style={styles.workerName}>{worker.username}</Text>
             <Text style={styles.workeramount}>Rs.{amt}</Text>
           </View>
@@ -123,7 +123,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 30,
-    padding:10
+    padding:10,
+    color:'#781C68',
   },
   workerListContainer: {
     flex: 1,
@@ -171,7 +172,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 0,
-    color: 'grey', // Darker text color
+    color: '#781C68', // Darker text color
     padding:5
   },
   workeramount: {
@@ -210,7 +211,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   button: {
-    backgroundColor: '#333',
+    backgroundColor: '#781C68',
     padding: 10,
     borderRadius: 5,
     marginTop: 90,
@@ -223,7 +224,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonLeft: {
-    backgroundColor: '#d6c25a',
+    backgroundColor: '#781C68',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
