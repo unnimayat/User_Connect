@@ -1,20 +1,43 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
 
-const Feedback = () => {
+import { useNavigation } from '@react-navigation/native';
+const Feedback = ({route}) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
-
+  const { app_id} = route.params;
+  const navigation = useNavigation();
   const handleStarPress = (value) => {
     setRating(value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // You can handle submission logic here, like sending the feedback to your backend
     console.log('Rating:', rating);
     console.log('Comment:', comment);
+    console.log('id:', app_id);
     // Reset fields after submission
+    try {
+      const feedbackData = {
+        appointmentId: app_id, // Replace with the actual appointment ID
+        description: comment,
+        rating: rating,
+      };
+
+      // Replace 'YOUR_BACKEND_API_URL' with your actual backend API URL
+      const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/feedback/feedback`, feedbackData);
+
+      console.log('Feedback submitted:', response.data);
+
+      // Reset fields after submission
+      setRating(0);
+      setComment('');
+      navigation.navigate('feed');
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
+    }
     setRating(0);
     setComment('');
   };

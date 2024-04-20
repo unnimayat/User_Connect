@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
 import axios from 'axios';
-
+import Icon from 'react-native-vector-icons/MaterialIcons';
 export default function History() {
   const [workers, setWorkers] = useState([]);
   const [uid, setUid] = useState();
@@ -60,17 +60,19 @@ export default function History() {
   return (
     <View style={styles.container}>
       <View style={styles.workerListContainer}>
-        <Text style={styles.heading}>Appointment History</Text>
-        <ScrollView>
+         
+     
           <FlatList
             data={workers}
             renderItem={({ item }) => (
+              
               <TouchableOpacity style={styles.workerItem} onPress={() => handleWorkerPress(item.id)}>
+                <Icon name="account-circle" size={24} color="#781C68" style={{ marginRight: 8 }} />
                 <Text style={styles.workerName}>{item.name}</Text>
               </TouchableOpacity>
             )}
           />
-        </ScrollView>
+         
       </View>
     </View>
   );
@@ -87,20 +89,18 @@ const styles = StyleSheet.create({
     color:'#781C68'
   },
   workerItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'row', 
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     paddingVertical: 12,
-    
-    color:'#781C68'
+   
   },
   workerName: {
     fontSize: 16,
     fontWeight: 'bold',
     
-    color:'#781C68',
+    color:'grey',
   },
   container: {
     flex: 1,

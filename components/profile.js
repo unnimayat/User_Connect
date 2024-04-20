@@ -70,12 +70,7 @@ const Profile = () => {
  }
   return (
     <View style={styles.container}> 
-    <View style={styles.head}>
-        <Text style={styles.heading}>Profile</Text>
-        <TouchableOpacity style={styles.sendButton} onPress={handleEdit}   >
-          <Text style={styles.sendButtonText}>Edit</Text>
-        </TouchableOpacity>
-      </View>
+     
       <View style={styles.profileContainer}>
         <Image
           source={require('./profile.png')}  
@@ -139,13 +134,15 @@ heading: {
 }, 
 profileContainer: {
   alignItems: 'center',
+  margin:10
 },
 profileImage: {
   width: 150,
   height: 150,
   borderRadius: 75,
-  marginBottom: 20,
-  color:'#781C68', 
+  marginBottom: 20, 
+  tintColor: '#781C68',
+  padding:5
 }, 
 userName: {
   fontSize: 24,
@@ -189,7 +186,7 @@ semilight: {
   color: '#333',
 },
 light: {
-  fontSize: 16,
+  fontSize: 12,
   fontWeight: '400',
   marginBottom: 10,
   color: '#781C68',

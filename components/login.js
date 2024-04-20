@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, View, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, TextInput, View, TouchableOpacity, Text ,Image} from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -82,6 +82,7 @@ export default function Login() {
     <View style={styles.container}>
       <View style={styles.label}>
         <Text style={styles.loginText1}>Login</Text>
+        <Image source={require('../assets/2.jpeg')} style={styles.image} />
         <TextInput
           style={styles.inputname}
           placeholder="Enter Name"
@@ -168,9 +169,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loginText1: {
-    top: -160,
+    top: -110,
     fontSize: 20,
     fontWeight: 'bold',
     color: '#781C68', // White text color
+  },
+  image: {
+   height:100,
+    resizeMode: 'contain', // Adjust the image to fit inside the container
   },
 });

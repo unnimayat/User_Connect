@@ -56,15 +56,12 @@ export default function Active() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.workerListContainer}>
-        <Text style={styles.heading}>Active Appointments</Text>
-
-        <ScrollView>
+      <View style={styles.workerListContainer}> 
           <FlatList
             data={activeWorkers}
             renderItem={({ item }) => (
               <View style={styles.workerContainer}>
-                <TouchableOpacity style={styles.workerItem}  onPress={() => navigation.navigate('activedetails', { worker: item.worker,amt:item.amount })}>
+                <TouchableOpacity style={styles.workerItem}  onPress={() => navigation.navigate('activedetails', { worker: item.worker,amt:item.amount ,app_id:item._id})}>
                   <View style={styles.workerInfoContainer}>
                     <View style={styles.workerNameContainer}>
                       <Icon name="account-circle" size={24} color="#781C68" style={{ marginRight: 8 }} />
@@ -80,8 +77,7 @@ export default function Active() {
                 </TouchableOpacity>
               </View>
             )}
-          />
-        </ScrollView>
+          /> 
 
       </View>
     </View>
