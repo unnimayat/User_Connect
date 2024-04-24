@@ -324,6 +324,7 @@ const Bidding = ({ route }) => {
         {
           workeraccepted &&
           <View style={styles.popuplabelContainer}>
+             <Image source={require('../assets/pop.jpg')} style={styles.image} />
             <Text style={styles.whiteText}>Worker has accepted the Request</Text>
             <Text style={styles.labelText}> {label}</Text>
             <View style={styles.acceptRejectContainer}>
